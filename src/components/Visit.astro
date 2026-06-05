@@ -39,6 +39,8 @@ import { asset } from '../utils/asset';
   position: absolute; left: 0; right: 0; top: -15%; bottom: -15%; z-index: 0;
   background-size: cover; background-position: center 72%;
   opacity: .18; filter: saturate(1.05) contrast(.98); will-change: transform;
+  /* Posición inicial explícita para evitar flash en producción */
+  transform: translate3d(0, 0, 0);
 }
 .visit::before {
   content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;

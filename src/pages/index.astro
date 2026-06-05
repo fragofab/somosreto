@@ -153,8 +153,8 @@ import FabWhatsapp from "../components/FabWhatsapp.astro";
           const section = el.closest("section");
           if (!section) return;
           const rect = section.getBoundingClientRect();
-          // Solo procesar si la sección está cerca del viewport
-          if (rect.bottom < 0 || rect.top > vh) return;
+          // Solo mover si la sección está cerca del viewport
+          if (rect.top > vh * 2) return;
           const distFromCenter = rect.top + rect.height / 2 - vh / 2;
           const speed = parseFloat(el.dataset.parallax ?? "0.22");
           el.style.transform = `translate3d(0, ${-distFromCenter * speed}px, 0)`;
