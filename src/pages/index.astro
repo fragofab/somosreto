@@ -196,6 +196,9 @@ import FabWhatsapp from "../components/FabWhatsapp.astro";
       { passive: true },
     );
 
-    update();
+    // Esperar a que el layout esté completamente calculado
+    requestAnimationFrame(() => {
+      requestAnimationFrame(update);
+    });
   })();
 </script>
