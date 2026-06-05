@@ -1,5 +1,6 @@
 ---
 // Fundamentos.astro — 3 pilares con foto full-bleed + dark overlay
+const base = import.meta.env.BASE_URL;
 ---
 
 <section class="fundamentos" id="fundamentos">
@@ -13,7 +14,7 @@
     <div class="f-grid">
 
       <article class="f-card reveal">
-        <div class="f-card-bg" style="background-image:url('https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=1200&q=80&auto=format');background-size:auto 115%;background-position:center 50%"></div>
+        <div class="f-card-bg" style="background-image:url(`${base}photos/pilares/01-reconciliacion.jpg`);background-size:auto 115%;background-position:center 50%"></div>
         <div class="f-card-overlay"></div>
         <div class="f-card-content">
           <header class="f-card-top">
@@ -31,7 +32,7 @@
       </article>
 
       <article class="f-card reveal d1">
-        <div class="f-card-bg" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=1200&q=80');background-position:center top"></div>
+        <div class="f-card-bg" style="background-image:url(`${base}photos/pilares/02-transformacion.jpg`);background-position:center top"></div>
         <div class="f-card-overlay"></div>
         <div class="f-card-content">
           <header class="f-card-top">
@@ -49,7 +50,7 @@
       </article>
 
       <article class="f-card reveal d2">
-        <div class="f-card-bg" style="background-image:url('/photos/pilares/03-discipulado.jpg');background-position:center top"></div>
+        <div class="f-card-bg" style="background-image:url(`${base}photos/pilares/03-discipulado.jpg`);background-position:center top"></div>
         <div class="f-card-overlay"></div>
         <div class="f-card-content">
           <header class="f-card-top">
