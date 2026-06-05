@@ -1,0 +1,189 @@
+---
+// Contacto.astro — Mapa custom + panel navy flotante
+---
+
+<section class="contacto" id="contacto">
+  <div class="container">
+    <div class="contacto-head">
+      <div class="eyebrow eyebrow-dot reveal">Contacto</div>
+      <h2 class="reveal d1">
+        <span class="l1">Nos gustaría conocerte</span>
+        <span class="l2">te esperamos</span>
+      </h2>
+    </div>
+
+    <div class="contacto-stage reveal d2">
+      <div class="contacto-map">
+        <div class="map-pulse">
+          <span class="ring"></span>
+          <span class="ring" style="animation-delay:.6s"></span>
+          <span class="dot"></span>
+        </div>
+        <iframe
+          src="https://maps.google.com/maps?q=Terraza%20Las%20Ceibas%20Marcelino%20Garc%C3%ADa%20Barrag%C3%A1n%205000%20Guadalajara&t=&z=16&ie=UTF8&iwloc=&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Ubicación RETO — Terraza Las Ceibas">
+        </iframe>
+        <div class="map-cta">
+          <a class="map-open-link" href="https://maps.google.com/?q=Terraza+Las+Ceibas+Marcelino+Garc%C3%ADa+Barrag%C3%A1n+5000+Guadalajara" target="_blank" rel="noopener">
+            Abrir en Google Maps
+            <svg viewBox="0 0 10 10"><path d="M1 9L9 1M9 1H2M9 1V8" stroke="currentColor" stroke-linecap="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="contacto-panel">
+        <div class="panel-cell">
+          <div class="ico">
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="txt">
+            <span class="label">Dirección</span>
+            <span class="value"><strong>Terraza Las Ceibas</strong><br/>Marcelino García Barragán #5000<br/>Guadalajara, Jalisco</span>
+          </div>
+        </div>
+        <div class="panel-cell">
+          <div class="ico">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div class="txt">
+            <span class="label">Horario</span>
+            <span class="value">Servicio en Comunidad<br/>Domingos · 10:00 a.m.</span>
+          </div>
+        </div>
+        <div class="panel-socials">
+          <a href="https://facebook.com/somos.reto" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.5 9.87v-6.99H8v-2.88h2.5V9.84c0-2.47 1.47-3.83 3.72-3.83 1.08 0 2.21.19 2.21.19v2.43h-1.25c-1.23 0-1.61.76-1.61 1.55v1.86h2.74l-.44 2.88h-2.3v6.99A10 10 0 0 0 22 12z"/></svg>
+          </a>
+          <a href="https://instagram.com/somos.reto" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+.contacto {
+  position: relative; padding: 130px 0 110px;
+  background: var(--cream-100); overflow: hidden;
+}
+.contacto::before {
+  content: ''; position: absolute; top: 10%; left: -10%;
+  width: 420px; height: 420px; border-radius: 50%;
+  background: var(--grad-silver-cream); filter: blur(4px); opacity: .7; z-index: 0;
+}
+.contacto-head {
+  text-align: center; max-width: 760px; margin: 0 auto 56px;
+  position: relative; z-index: 2;
+}
+.contacto-head .eyebrow-dot { justify-content: center; margin-bottom: 18px; display: inline-flex }
+.contacto-head h2 .l1 { display: block; font-weight: 300 }
+.contacto-head h2 .l2 {
+  display: block; font-weight: 400; font-style: italic;
+  background: linear-gradient(95deg, #f2c5a3 0%, #e3be78 50%, #f2c5a3 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.contacto-stage { position: relative; z-index: 2; padding-bottom: 120px }
+.contacto-map {
+  position: relative; border-radius: var(--r-lg); overflow: hidden;
+  background: var(--navy-800); height: 520px;
+  box-shadow: 0 18px 40px -24px rgba(20,26,45,.18); isolation: isolate;
+}
+.contacto-map iframe {
+  width: 100%; height: 100%; border: 0; display: block;
+  position: absolute; inset: 0;
+  filter: grayscale(.35) contrast(1.04) brightness(.98) sepia(.08) hue-rotate(-10deg);
+  transition: filter .6s var(--e-out);
+}
+.contacto-map:hover iframe { filter: grayscale(.1) contrast(1.06) brightness(1) sepia(.04) hue-rotate(-6deg) }
+.contacto-map::after {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(60% 70% at 20% 90%, rgba(20,26,45,.25) 0%, transparent 55%),
+    radial-gradient(50% 60% at 100% 0%, rgba(242,197,163,.18) 0%, transparent 60%);
+  pointer-events: none; z-index: 1;
+}
+.map-cta { position: absolute; right: 22px; top: 22px; z-index: 3 }
+.map-open-link {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 18px 12px 20px;
+  background: rgba(20,26,45,.92); color: #fff;
+  border: 1px solid rgba(255,255,255,.1); border-radius: var(--r-pill);
+  backdrop-filter: blur(14px); font-size: .8125rem; font-weight: 500;
+  transition: all .4s var(--e-out);
+}
+.map-open-link:hover { background: #fff; color: var(--ink); border-color: #fff }
+.map-open-link svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.8; transition: transform .4s var(--e-out) }
+.map-open-link:hover svg { transform: rotate(-45deg) translate(1px,-1px) }
+.map-pulse {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+  width: 22px; height: 22px; z-index: 2; pointer-events: none;
+}
+.map-pulse .dot { position: absolute; inset: 0; border-radius: 50%; background: var(--grad-pill); box-shadow: 0 6px 18px rgba(242,197,163,.6) }
+.map-pulse .ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 2px solid rgba(242,197,163,.7);
+  animation: ring 2.2s var(--e-soft) infinite;
+}
+@keyframes ring { 0% { transform: scale(1); opacity: .7 } 100% { transform: scale(4); opacity: 0 } }
+
+.contacto-panel {
+  position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  width: 86%; max-width: 1040px;
+  background: var(--navy-900); border-radius: var(--r-lg);
+  padding: 34px 72px;
+  display: grid; grid-template-columns: 1.05fr 1.05fr auto; gap: 36px;
+  align-items: start;
+  box-shadow: 0 30px 70px -28px rgba(20,26,45,.55);
+  border: 1px solid rgba(255,255,255,.06);
+  overflow: hidden; z-index: 4;
+}
+.contacto-panel::before {
+  content: ''; position: absolute; top: -120px; right: -80px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: var(--grad-pill); filter: blur(80px); opacity: .18; pointer-events: none;
+}
+.panel-cell {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start;
+}
+.panel-cell .ico {
+  width: 44px; height: 44px; border-radius: 14px; flex: none;
+  background: var(--grad-pill);
+  display: inline-flex; align-items: center; justify-content: center; color: var(--navy-900);
+}
+.panel-cell .ico svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8 }
+.panel-cell .txt { display: flex; flex-direction: column; gap: 4px }
+.panel-cell .label { font-size: .6875rem; text-transform: uppercase; letter-spacing: .22em; color: rgba(255,255,255,.5); font-weight: 500 }
+.panel-cell .value { font-size: .9375rem; color: #fff; line-height: 1.5 }
+.panel-cell .value strong { font-weight: 600; color: #fff }
+.panel-cell + .panel-cell { padding-left: 32px; border-left: 1px solid rgba(255,255,255,.08); align-self: stretch }
+.panel-socials {
+  position: relative; z-index: 1; align-self: stretch;
+  display: flex; gap: 12px; align-items: center;
+  padding-left: 32px; border-left: 1px solid rgba(255,255,255,.08);
+}
+.panel-socials a {
+  width: 46px; height: 46px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--grad-pill); color: var(--navy-900);
+  transition: all .4s var(--e-out);
+}
+.panel-socials a:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 14px 26px -14px rgba(242,197,163,.55) }
+.panel-socials a svg { width: 18px; height: 18px }
+
+@media (max-width: 1000px) {
+  .contacto-stage { padding-bottom: 0 }
+  .contacto-map { height: 380px }
+  .contacto-panel {
+    position: relative; left: auto; bottom: auto; transform: none;
+    width: 100%; max-width: 100%; margin-top: 18px;
+    grid-template-columns: 1fr; gap: 22px; padding: 28px 24px;
+  }
+  .panel-cell + .panel-cell { padding-left: 0; border-left: 0; border-top: 1px solid rgba(255,255,255,.08); padding-top: 22px }
+  .panel-socials { padding-left: 0; border-left: 0; border-top: 1px solid rgba(255,255,255,.08); padding-top: 22px }
+}
+<style is:global>

@@ -1,0 +1,311 @@
+---
+// Hero.astro — Headline centrado + drum 3D carousel (Framer verbatim)
+---
+
+<section class="hero" id="top">
+  <div class="hero-content">
+    <div class="eyebrow eyebrow-dot hero-eyebrow">
+      Comunidad Cristiana en Guadalajara
+    </div>
+    <h1>
+      <span class="l1">Reconciliación Total,</span>
+      <span class="l2">Tu vida transformada.</span>
+    </h1>
+    <p class="hero-sub">
+      Soñamos con ser un lugar donde las relaciones se reconcilian, las vidas
+      se transforman y los discípulos se multiplican.
+    </p>
+    <div class="hero-cta-row">
+      <a href="#visit" class="btn-primary">
+        Visítanos
+        <span class="arr">
+          <svg viewBox="0 0 10 10" fill="none">
+            <path d="M1 9L9 1M9 1H2M9 1V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 3D Drum Carousel — DOM Framer verbatim -->
+  <div class="framer-wf0kvx">
+    <div class="framer-ux3tlg-container">
+      <div class="framer-n7oh7a" data-framer-name="Variant 1">
+        <div class="framer-18sfqik" data-framer-name="Slider">
+          <div class="framer-1j38ets" data-framer-name="Circle" data-drum-circle></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+/* ── Hero shell ── */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 1040px;
+  overflow: hidden;
+  background: var(--cream-100);
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(20,26,45,.03) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none; opacity: .6;
+}
+
+/* ── Hero copy ── */
+.hero-content {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 3;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 150px 24px 36px;
+}
+.hero-eyebrow {
+  margin-bottom: 22px;
+  opacity: 0; transform: translateY(14px);
+  animation: rise .9s var(--e-soft) .15s forwards;
+}
+.hero h1 {
+  max-width: 860px; margin-bottom: 24px;
+  opacity: 0; transform: translateY(18px);
+  animation: rise 1s var(--e-soft) .25s forwards;
+}
+.hero h1 .l1 { display: block; font-weight: 300 }
+.hero h1 .l2 {
+  display: block; font-weight: 400; font-style: italic;
+  background: linear-gradient(95deg, #f2c5a3 0%, #e3be78 50%, #f2c5a3 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-sub {
+  font-size: clamp(1rem, 1.2vw, 1.0625rem);
+  color: var(--ink-muted);
+  max-width: 54ch; line-height: 1.6; text-align: center; font-weight: 400;
+  margin: 0 auto 28px;
+  opacity: 0; transform: translateY(16px);
+  animation: rise 1s var(--e-soft) .4s forwards;
+}
+.hero-cta-row {
+  display: inline-flex; justify-content: center;
+  opacity: 0; transform: translateY(16px);
+  animation: rise 1s var(--e-soft) .55s forwards;
+}
+@keyframes rise { to { opacity: 1; transform: translateY(0) } }
+
+/* ── Drum Carousel (verbatim Framer) ── */
+.framer-wf0kvx {
+  place-content: center flex-start; align-items: center;
+  display: flex; flex: 0 0 auto; flex-flow: column;
+  gap: 10px; height: min-content;
+  left: 50%; overflow: visible;
+  padding: 0; position: absolute; top: 300px;
+  width: 1600px; z-index: 1;
+  transform: matrix(1,0,0,1,-800,0);
+  transform-origin: 800px 300px;
+  -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgb(0,0,0) 19.7213%, rgb(0,0,0) 80%, rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgb(0,0,0) 19.7213%, rgb(0,0,0) 80%, rgba(0,0,0,0) 100%);
+}
+.framer-ux3tlg-container {
+  flex: 0 0 auto; height: 840px; position: relative; width: 100%;
+  overflow: visible;
+}
+.framer-n7oh7a {
+  place-content: center; align-items: center;
+  display: flex; flex-flow: row; gap: 10px;
+  height: 840px; overflow: visible;
+  position: relative; width: 1600px;
+}
+.framer-18sfqik {
+  place-content: center; align-items: center;
+  display: flex; flex: 1 0 0; flex-flow: row;
+  gap: 10px; height: min-content; overflow: visible; padding: 0;
+  position: relative;
+  transform-style: preserve-3d;
+  width: 1px; will-change: transform;
+  animation: drum-spin 60s linear infinite;
+}
+.framer-1j38ets {
+  place-content: center; align-items: center;
+  display: flex; flex: 1 0 0; flex-flow: column;
+  gap: 10px; height: min-content; overflow: visible; padding: 0;
+  position: relative; transform-style: preserve-3d; width: 1px;
+}
+.framer-jqyyw2 {
+  place-content: center space-between; align-items: center;
+  display: flex; flex: 0 0 auto; flex-flow: row;
+  height: 400px; overflow: visible; padding: 0;
+  position: relative; transform-style: preserve-3d; width: 1400px;
+}
+.framer-ybx3e6, .framer-bfxn5x, .framer-80t3x0, .framer-ce9hg6, .framer-f1eujk {
+  place-content: center space-between; align-items: center;
+  display: flex; flex: 0 0 auto; flex-flow: row;
+  height: 400px;
+  left: calc(50% - 700px); overflow: visible; padding: 0;
+  position: absolute; top: calc(50% - 200px);
+  transform-style: preserve-3d; width: 1400px; z-index: 1;
+}
+.framer-61s6s8, .framer-136ky85, .framer-1so9oqn, .framer-qhp8iz,
+.framer-5e9gtl, .framer-1ukzqzj, .framer-1k05s3f, .framer-1bz5k7j,
+.framer-73srre, .framer-1v2q94u, .framer-1gbvn36, .framer-1qeudci {
+  backface-visibility: hidden;
+  flex: 0 0 auto; height: 400px; overflow: hidden;
+  position: relative; width: 280px; border-radius: 22px;
+  transform-style: preserve-3d;
+  will-change: transform;
+  box-shadow: 0 22px 45px -20px rgba(20,26,45,.35);
+}
+.framer-61s6s8 img, .framer-136ky85 img, .framer-1so9oqn img, .framer-qhp8iz img,
+.framer-5e9gtl img, .framer-1ukzqzj img, .framer-1k05s3f img, .framer-1bz5k7j img,
+.framer-73srre img, .framer-1v2q94u img, .framer-1gbvn36 img, .framer-1qeudci img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  user-select: none; -webkit-user-drag: none; pointer-events: none;
+}
+.framer-61s6s8 picture, .framer-136ky85 picture, .framer-1so9oqn picture, .framer-qhp8iz picture,
+.framer-5e9gtl picture, .framer-1ukzqzj picture, .framer-1k05s3f picture, .framer-1bz5k7j picture,
+.framer-73srre picture, .framer-1v2q94u picture, .framer-1gbvn36 picture, .framer-1qeudci picture {
+  width: 100%; height: 100%; display: block;
+}
+
+/* WebKit @supports verbatim — NO omitir */
+@supports (background: -webkit-named-image(i)) and (not (font-palette:dark)) {
+  .framer-n7oh7a, .framer-18sfqik, .framer-1j38ets { gap: 0 }
+  .framer-n7oh7a > *, .framer-18sfqik > * { margin: 0 5px }
+  .framer-n7oh7a > :first-child, .framer-18sfqik > :first-child { margin-left: 0 }
+  .framer-n7oh7a > :last-child,  .framer-18sfqik > :last-child  { margin-right: 0 }
+  .framer-1j38ets > * { margin: 5px 0 }
+  .framer-1j38ets > :first-child { margin-top: 0 }
+  .framer-1j38ets > :last-child  { margin-bottom: 0 }
+}
+
+@keyframes drum-spin {
+  from { transform: perspective(600px) rotateY(0deg) }
+  to   { transform: perspective(600px) rotateY(360deg) }
+}
+.framer-18sfqik:hover { animation-play-state: paused }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero { height: 925px }
+  .framer-wf0kvx {
+    top: 295px;
+    transform-origin: center top;
+    transform: translateX(-50%) scale(.85);
+  }
+}
+@media (max-width: 600px) {
+  .hero { height: 850px }
+  .hero-content { padding: 120px 20px 28px }
+  .framer-wf0kvx {
+    top: 330px;
+    transform-origin: center top;
+    transform: translateX(-50%) scale(.7);
+  }
+}
+@media (max-width: 400px) {
+  .hero { height: 820px }
+  .framer-wf0kvx {
+    top: 360px;
+    transform-origin: center top;
+    transform: translateX(-50%) scale(.6);
+  }
+}
+</style>
+
+<script>
+// ── Carousel config ──────────────────────────────────────────
+interface CarouselPhoto {
+  src: string;
+  alt: string;
+}
+
+interface DrumRow {
+  name: string;
+  rowClass: string;
+  cardA: string;
+  cardB: string;
+  rotateY: number;
+}
+
+const CAROUSEL_PHOTOS: CarouselPhoto[] = [
+  // Fila 1 (rotateY: 90°)
+  { src: 'photos/carousel/01',                                                               alt: 'Comunidad RETO 01' },
+  { src: 'https://framerusercontent.com/images/57FQ23G8YHiC363dq9ZuPtwr0.jpeg',             alt: 'Comunidad RETO 02' },
+  // Fila 2 (rotateY: 120°)
+  { src: 'https://framerusercontent.com/images/U9l9kstfWWpRl449CvhR4d0JeT0.jpeg',          alt: 'Comunidad RETO 03' },
+  { src: 'https://framerusercontent.com/images/kbNFZce57OnBXCn4MAJiLPGO7XA.jpeg',          alt: 'Comunidad RETO 04' },
+  // Fila 3 (rotateY: 150°)
+  { src: 'https://framerusercontent.com/images/VGtYWf0GDjuYy6su9d25bNj39w.jpeg',           alt: 'Comunidad RETO 05' },
+  { src: 'https://framerusercontent.com/images/2oXDTiWOk4Nv4eP6dJOIJaKnvE.jpeg',           alt: 'Comunidad RETO 06' },
+  // Fila 4 (rotateY: 180°)
+  { src: 'https://framerusercontent.com/images/QxNLs6KRLKF2Ez6aHcc8gZgMHFI.jpeg',          alt: 'Comunidad RETO 07' },
+  { src: 'https://framerusercontent.com/images/nDrewfow2YN710qbCwekZ125Fg.jpeg',            alt: 'Comunidad RETO 08' },
+  // Fila 5 (rotateY: 60°)
+  { src: 'https://framerusercontent.com/images/Pce8zh8gSMxh8wVYEHEOy4SvVc.jpeg',           alt: 'Comunidad RETO 09' },
+  { src: 'https://framerusercontent.com/images/sHEb4U6G3rUiHgH4ZDlRM19I5S4.jpeg',          alt: 'Comunidad RETO 10' },
+  // Fila 6 (rotateY: 30°)
+  { src: 'https://framerusercontent.com/images/6mmjFHOHpG2hp6goATRJeAR6M.jpeg',            alt: 'Comunidad RETO 11' },
+  { src: 'https://framerusercontent.com/images/SQfk5KKyL6UHiGpazb6E0fPxH8.jpeg',           alt: 'Comunidad RETO 12' },
+];
+
+const DRUM_ROWS: DrumRow[] = [
+  { name:'Image 01', rowClass:'framer-jqyyw2', cardA:'framer-61s6s8',  cardB:'framer-136ky85', rotateY: 90  },
+  { name:'Image 02', rowClass:'framer-ybx3e6', cardA:'framer-1so9oqn', cardB:'framer-qhp8iz',  rotateY: 120 },
+  { name:'Image 03', rowClass:'framer-bfxn5x', cardA:'framer-5e9gtl',  cardB:'framer-1ukzqzj', rotateY: 150 },
+  { name:'Image 04', rowClass:'framer-80t3x0', cardA:'framer-1k05s3f', cardB:'framer-1bz5k7j', rotateY: 180 },
+  { name:'Image 05', rowClass:'framer-ce9hg6', cardA:'framer-73srre',  cardB:'framer-1v2q94u', rotateY: 60  },
+  { name:'Image 06', rowClass:'framer-f1eujk', cardA:'framer-1gbvn36', cardB:'framer-1qeudci', rotateY: 30  },
+];
+
+function buildImage(photo: CarouselPhoto): string {
+  const isExternal = /^https?:\/\//.test(photo.src);
+  const alt = photo.alt.replace(/"/g, '&quot;');
+  if (isExternal) {
+    return `<img src="${photo.src}" alt="${alt}" loading="lazy" decoding="async" width="280" height="400">`;
+  }
+  return `<picture>
+    <source srcset="${photo.src}.webp" type="image/webp">
+    <img src="${photo.src}.jpg" alt="${alt}" loading="lazy" decoding="async" width="280" height="400">
+  </picture>`;
+}
+
+function renderDrum(): void {
+  const circle = document.querySelector('[data-drum-circle]');
+  if (!circle) return;
+
+  if (CAROUSEL_PHOTOS.length < 12) {
+    console.warn(`[carousel] Se esperaban 12 fotos, hay ${CAROUSEL_PHOTOS.length}.`);
+  }
+
+  circle.innerHTML = DRUM_ROWS.map((row, i) => {
+    const photoA = CAROUSEL_PHOTOS[i * 2]     ?? { src: '', alt: '' };
+    const photoB = CAROUSEL_PHOTOS[i * 2 + 1] ?? { src: '', alt: '' };
+    return `
+      <div class="${row.rowClass}" data-framer-name="${row.name}" style="transform:rotateY(${row.rotateY}deg)">
+        <div class="${row.cardA}" style="transform:rotateY(90deg)">${buildImage(photoA)}</div>
+        <div class="${row.cardB}" style="transform:rotateY(-90deg)">${buildImage(photoB)}</div>
+      </div>`;
+  }).join('');
+}
+
+renderDrum();
+
+// ── Parallax sutil del drum ──────────────────────────────────
+(function () {
+  const reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const drumEl  = document.querySelector('.framer-wf0kvx') as HTMLElement | null;
+  if (reduce || !drumEl) return;
+
+  let ticking = false;
+  function update(): void {
+    const y = window.scrollY;
+    if (y < 1200) {
+      drumEl!.style.transform = `matrix(1,0,0,1,-800,${y * 0.06})`;
+    }
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+})();
+</script>

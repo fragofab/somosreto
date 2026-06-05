@@ -1,0 +1,179 @@
+---
+// Fundamentos.astro — 3 pilares con foto full-bleed + dark overlay
+---
+
+<section class="fundamentos" id="fundamentos">
+  <div class="container">
+    <div class="fundamentos-head">
+      <div class="eyebrow eyebrow-dot reveal">Nuestros Fundamentos</div>
+      <h2 class="reveal d1">Tres pilares que <em>nos definen</em>.</h2>
+      <p class="lede reveal d2">Reconciliación, transformación y multiplicación. El camino que define lo que somos como iglesia.</p>
+    </div>
+
+    <div class="f-grid">
+
+      <article class="f-card reveal">
+        <div class="f-card-bg" style="background-image:url('https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=1200&q=80&auto=format');background-size:auto 115%;background-position:center 50%"></div>
+        <div class="f-card-overlay"></div>
+        <div class="f-card-content">
+          <header class="f-card-top">
+            <span class="chip-pilar">Primer Pilar</span>
+          </header>
+          <div class="f-card-body">
+            <h3>Reconciliar <em>Relaciones</em></h3>
+            <p>Restauramos primero la relación con Dios y, desde ahí, reconciliamos vínculos con la familia, la comunidad y con uno mismo.</p>
+            <div class="f-card-verse">
+              <span class="v-quote">"Todo esto proviene de Dios, quien nos reconcilió consigo mismo por medio de Cristo."</span>
+              <span class="v-cite">2 Corintios 5:18–20</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="f-card reveal d1">
+        <div class="f-card-bg" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=1200&q=80');background-position:center top"></div>
+        <div class="f-card-overlay"></div>
+        <div class="f-card-content">
+          <header class="f-card-top">
+            <span class="chip-pilar">Segundo Pilar</span>
+          </header>
+          <div class="f-card-body">
+            <h3><span class="line">Transformar</span><em class="line">Vidas</em></h3>
+            <p>Creemos en el poder del Espíritu Santo para renovar la mente, sanar heridas y dar nueva identidad a cada persona.</p>
+            <div class="f-card-verse">
+              <span class="v-quote">"No se amolden al mundo actual, sino sean transformados mediante la renovación de su mente."</span>
+              <span class="v-cite">Romanos 12:2</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="f-card reveal d2">
+        <div class="f-card-bg" style="background-image:url('/photos/pilares/03-discipulado.jpg');background-position:center top"></div>
+        <div class="f-card-overlay"></div>
+        <div class="f-card-content">
+          <header class="f-card-top">
+            <span class="chip-pilar">Tercer Pilar</span>
+          </header>
+          <div class="f-card-body">
+            <h3>Multiplicar <em>Discípulos</em></h3>
+            <p>Formamos creyentes que forman creyentes. El discipulado es el motor que extiende el Reino más allá de nuestras paredes.</p>
+            <div class="f-card-verse">
+              <span class="v-quote">"Vayan y hagan discípulos de todas las naciones, bautizándolos en el nombre del Padre."</span>
+              <span class="v-cite">Mateo 28:19</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<style is:global>
+.fundamentos {
+  position: relative;
+  padding: 80px 0 110px;
+  background: var(--cream-100);
+}
+.fundamentos-head {
+  text-align: center;
+  max-width: 760px; margin: 0 auto 64px;
+}
+.fundamentos-head .eyebrow-dot { justify-content: center; margin-bottom: 20px; display: inline-flex }
+.fundamentos-head h2 { margin-bottom: 18px }
+.fundamentos-head h2 em {
+  font-style: italic; font-weight: 400;
+  background: linear-gradient(95deg, #f2c5a3 0%, #e3be78 50%, #f2c5a3 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.fundamentos-head .lede { color: var(--ink-muted); max-width: 56ch; margin: 0 auto; font-size: 1.0625rem; line-height: 1.6 }
+
+.f-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px }
+
+.f-card {
+  position: relative; border-radius: var(--r-lg); overflow: hidden;
+  aspect-ratio: 3/4; min-height: 540px; isolation: isolate;
+  background: var(--navy-800);
+  box-shadow: 0 22px 50px -24px rgba(20,26,45,.28);
+  transition: transform .7s var(--e-out), box-shadow .7s var(--e-out);
+}
+.f-card:hover { transform: translateY(-6px); box-shadow: 0 40px 70px -28px rgba(20,26,45,.4) }
+
+.f-card-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: center;
+  transform: scale(1.02);
+  transition: transform 1.4s var(--e-soft), filter 1.4s var(--e-soft);
+  filter: saturate(1.05) contrast(1.02);
+}
+.f-card:hover .f-card-bg { transform: scale(1.08); filter: saturate(1.1) contrast(1.04) }
+
+.f-card-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(to top, rgba(20,26,45,.94) 0%, rgba(20,26,45,.7) 28%, rgba(20,26,45,.3) 55%, rgba(20,26,45,.05) 80%, transparent 100%),
+    linear-gradient(to bottom, rgba(20,26,45,.35) 0%, transparent 35%);
+  pointer-events: none;
+}
+.f-card-content {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 24px 26px 30px;
+}
+.f-card-top { display: flex; justify-content: flex-start; align-items: flex-start; gap: 12px }
+
+.chip-pilar {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px 8px 10px;
+  background: rgba(254,250,243,.14);
+  border: 1px solid rgba(255,255,255,.22);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  border-radius: var(--r-pill);
+  font-family: 'Inter', sans-serif; font-size: .7rem; font-weight: 500;
+  color: rgba(255,255,255,.92); letter-spacing: .14em; text-transform: uppercase;
+}
+.chip-pilar::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--grad-pill);
+}
+
+.f-card-body { display: flex; flex-direction: column; gap: 14px; color: #fff }
+.f-card-body h3 {
+  color: #fff; letter-spacing: -.015em;
+  font-size: clamp(1.5rem, 2.2vw, 1.9rem);
+  text-shadow: 0 2px 12px rgba(20,26,45,.4);
+  max-width: 14ch;
+}
+.f-card-body h3 .line { display: block }
+.f-card-body h3 em {
+  font-style: italic; font-weight: 400;
+  background: linear-gradient(95deg, #f2c5a3 0%, #f7d7bd 40%, #e3be78 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding-right: .05em;
+}
+.f-card-body p {
+  font-size: .9375rem; line-height: 1.55;
+  color: rgba(255,255,255,.82); max-width: 36ch; font-weight: 400;
+}
+.f-card-verse {
+  margin-top: 6px; padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.16);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.f-card-verse .v-quote {
+  font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+  font-size: .875rem; line-height: 1.5; color: rgba(255,255,255,.72); letter-spacing: -.005em;
+}
+.f-card-verse .v-cite {
+  font-family: 'Inter', sans-serif; font-size: .66rem; font-weight: 500;
+  letter-spacing: .2em; text-transform: uppercase; color: #f2c5a3;
+}
+
+@media (max-width: 1000px) {
+  .f-grid { grid-template-columns: 1fr; gap: 20px }
+  .f-card { aspect-ratio: 4/5; min-height: 480px }
+  .f-card-content { padding: 22px 22px 26px }
+}
+</style>
