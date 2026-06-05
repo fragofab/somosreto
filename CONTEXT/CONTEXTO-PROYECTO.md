@@ -79,14 +79,47 @@
 | Testing E2E | **Playwright** (Chromium + Firefox + WebKit + Mobile) |
 | Testing Unit | **Vitest** |
 | CI/CD | **GitHub Actions** |
-| Hosting | **GitHub Pages** |
+| Hosting PRE-PROD | **GitHub Pages** (temporal, beta/demo) |
+| Hosting PROD | **Por definir** — dominio `somosreto.com` (~fin de semana 2026-06-14) |
 | Node.js | v24 |
 
 ### Repositorio
 - URL: `https://github.com/fragofab/reto-website`
 - Branch principal: `main`
 - Deploy automático: push a `main` → GitHub Actions → GitHub Pages
-- URL producción: `https://fragofab.github.io/reto-website`
+- URL pre-prod (beta): `https://fragofab.github.io/reto-website`
+- URL producción final: `https://somosreto.com` (pendiente compra de dominio/host)
+
+### Estrategia de hosting — decisión pendiente
+GitHub Pages sirve como **pre-prod/beta** solamente. Para producción con dominio propio hay dos opciones:
+
+**Opción A — GitHub Pages + Custom Domain (más simple):**
+- Comprar dominio `somosreto.com` en cualquier registrar (Namecheap, Google Domains, GoDaddy)
+- Apuntar DNS a GitHub Pages
+- Agregar el dominio en Settings → Pages → Custom domain
+- **Costo:** solo el dominio (~$15 USD/año) — el hosting sigue siendo gratis
+- **Ventaja:** cero cambios en el código, solo configuración DNS
+- **Desventaja:** limitado a sitios estáticos (sin servidor)
+
+**Opción B — Hosting propio (Cloudflare Pages, Netlify, Vercel):**
+- Conectar el repo de GitHub al proveedor elegido
+- Deploy automático en cada push
+- **Costo:** gratis en tier básico, ~$20/mes en Pro
+- **Ventaja:** más control, funciones serverless si se necesitan en el futuro (formularios, auth para CMS)
+- **Recomendación:** **Cloudflare Pages** — gratis, rápido, y si compramos el dominio en Cloudflare Registrar el DNS se configura automáticamente
+
+**→ Decisión recomendada: Opción A si el sitio se mantiene estático. Opción B (Cloudflare Pages) si vamos a agregar Decap CMS con autenticación o formularios de contacto.**
+
+### Impacto en el código al cambiar de dominio
+El único cambio necesario en `astro.config.mjs`:
+```javascript
+export default defineConfig({
+  site: 'https://somosreto.com',
+  base: '/',  //← quitar el /reto-website
+  output: 'static',
+});
+```
+Y eliminar la lógica `isProd` — con dominio propio siempre es `/` como base.
 
 ### Estructura del proyecto
 ```
@@ -219,7 +252,7 @@ export function asset(path: string): string {
 | STORY-006 | Analytics (Google Analytics 4) | ⏳ Pending |
 | STORY-SAF-001 | Fix drum carousel en Safari | ⏳ Pending |
 | STORY-CSS-001 | Renombrar clases framer-* a nombres semánticos | ⏳ Pending |
-| STORY-PAR-001 | Reimplementar parallax Visit con Intersection Observer | ⏳ Pending |
+| STORY-PAR-001 | Reimplementar parallax Visit con Intersection Observer | ✅ Fixed — se eliminó el parallax del photo-bg. La foto se muestra correctamente en su sección. Parallax puede reintroducirse en el futuro con IO si se desea el efecto. |
 
 ### EPIC-002: Blog
 | Story | Descripción | Status |
@@ -278,11 +311,12 @@ export function asset(path: string): string {
 
 1. **Astro style scoping rompe clases dinámicas.** Las clases generadas por JS (drum carousel) no reciben el atributo `data-astro-cid-*` — solución: `<style is:global>` en Hero.astro.
 2. **BASE_URL en Astro no incluye slash final.** Al concatenar rutas siempre agregar `/` explícito o usar el helper `asset()`.
-3. **Race condition parallax en producción.** El JS corre antes de que el browser calcule el layout completo en builds estáticos. Solución: no usar parallax en elementos con `position: absolute` fuera del viewport inicial.
+3. **Parallax con `translate3d` en elementos `position: absolute` — NO hacerlo.** Causa que el elemento se salga de su sección contenedora y aparezca en secciones superiores, especialmente en producción. El bug no aparece en local porque Vite/HMR ejecuta el JS después del layout; en builds estáticos el JS corre antes. **Solución rápida: eliminar `data-parallax` del elemento.** Solución correcta futura: usar Intersection Observer para calcular el parallax solo cuando la sección es visible.
 4. **`overflow: hidden` + `preserve-3d` en Safari.** Safari aplana el 3D cuando cualquier ancestro tiene overflow hidden — bug conocido del browser.
 5. **`define:vars` en Astro elimina TypeScript.** Al usar `<script define:vars={{ base }}>` el script pierde tipado estricto — usar solo para pasar variables del servidor al cliente cuando es necesario.
 6. **GitHub Pages requiere repo público** para el plan gratuito. La página no es indexable porque tiene `noindex, nofollow`.
 7. **Playwright en CI usa `npm run preview`** no `npm run dev` — el dev server tarda demasiado en CI y causa timeout.
+8. **Race condition parallax en producción.** El JS corre antes de que el browser calcule el layout completo en builds estáticos. `requestAnimationFrame` doble y `setTimeout` no son suficientes — la solución definitiva es no aplicar transforms JS a elementos fuera del viewport inicial.
 
 ---
 
