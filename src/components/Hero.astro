@@ -1,5 +1,6 @@
 ---
 // Hero.astro — Headline centrado + drum 3D carousel (Framer verbatim)
+const base = import.meta.env.BASE_URL;
 ---
 
 <section class="hero" id="top">
@@ -211,43 +212,23 @@
 }
 </style>
 
-<script>
-// ── Carousel config ──────────────────────────────────────────
-interface CarouselPhoto {
-  src: string;
-  alt: string;
-}
-
-interface DrumRow {
-  name: string;
-  rowClass: string;
-  cardA: string;
-  cardB: string;
-  rotateY: number;
-}
-
-const CAROUSEL_PHOTOS: CarouselPhoto[] = [
-  // Fila 1 (rotateY: 90°)
+<script define:vars={{ base }}>
+const CAROUSEL_PHOTOS = [
   { src: 'photos/carousel/01',                                                               alt: 'Comunidad RETO 01' },
   { src: 'https://framerusercontent.com/images/57FQ23G8YHiC363dq9ZuPtwr0.jpeg',             alt: 'Comunidad RETO 02' },
-  // Fila 2 (rotateY: 120°)
-  { src: 'https://framerusercontent.com/images/U9l9kstfWWpRl449CvhR4d0JeT0.jpeg',          alt: 'Comunidad RETO 03' },
-  { src: 'https://framerusercontent.com/images/kbNFZce57OnBXCn4MAJiLPGO7XA.jpeg',          alt: 'Comunidad RETO 04' },
-  // Fila 3 (rotateY: 150°)
-  { src: 'https://framerusercontent.com/images/VGtYWf0GDjuYy6su9d25bNj39w.jpeg',           alt: 'Comunidad RETO 05' },
-  { src: 'https://framerusercontent.com/images/2oXDTiWOk4Nv4eP6dJOIJaKnvE.jpeg',           alt: 'Comunidad RETO 06' },
-  // Fila 4 (rotateY: 180°)
-  { src: 'https://framerusercontent.com/images/QxNLs6KRLKF2Ez6aHcc8gZgMHFI.jpeg',          alt: 'Comunidad RETO 07' },
-  { src: 'https://framerusercontent.com/images/nDrewfow2YN710qbCwekZ125Fg.jpeg',            alt: 'Comunidad RETO 08' },
-  // Fila 5 (rotateY: 60°)
-  { src: 'https://framerusercontent.com/images/Pce8zh8gSMxh8wVYEHEOy4SvVc.jpeg',           alt: 'Comunidad RETO 09' },
-  { src: 'https://framerusercontent.com/images/sHEb4U6G3rUiHgH4ZDlRM19I5S4.jpeg',          alt: 'Comunidad RETO 10' },
-  // Fila 6 (rotateY: 30°)
-  { src: 'https://framerusercontent.com/images/6mmjFHOHpG2hp6goATRJeAR6M.jpeg',            alt: 'Comunidad RETO 11' },
-  { src: 'https://framerusercontent.com/images/SQfk5KKyL6UHiGpazb6E0fPxH8.jpeg',           alt: 'Comunidad RETO 12' },
+  { src: 'https://framerusercontent.com/images/U9l9kstfWWpRl449CvhR4d0JeT0.jpeg',           alt: 'Comunidad RETO 03' },
+  { src: 'https://framerusercontent.com/images/kbNFZce57OnBXCn4MAJiLPGO7XA.jpeg',           alt: 'Comunidad RETO 04' },
+  { src: 'https://framerusercontent.com/images/VGtYWf0GDjuYy6su9d25bNj39w.jpeg',            alt: 'Comunidad RETO 05' },
+  { src: 'https://framerusercontent.com/images/2oXDTiWOk4Nv4eP6dJOIJaKnvE.jpeg',            alt: 'Comunidad RETO 06' },
+  { src: 'https://framerusercontent.com/images/QxNLs6KRLKF2Ez6aHcc8gZgMHFI.jpeg',           alt: 'Comunidad RETO 07' },
+  { src: 'https://framerusercontent.com/images/nDrewfow2YN710qbCwekZ125Fg.jpeg',             alt: 'Comunidad RETO 08' },
+  { src: 'https://framerusercontent.com/images/Pce8zh8gSMxh8wVYEHEOy4SvVc.jpeg',            alt: 'Comunidad RETO 09' },
+  { src: 'https://framerusercontent.com/images/sHEb4U6G3rUiHgH4ZDlRM19I5S4.jpeg',           alt: 'Comunidad RETO 10' },
+  { src: 'https://framerusercontent.com/images/6mmjFHOHpG2hp6goATRJeAR6M.jpeg',             alt: 'Comunidad RETO 11' },
+  { src: 'https://framerusercontent.com/images/SQfk5KKyL6UHiGpazb6E0fPxH8.jpeg',            alt: 'Comunidad RETO 12' },
 ];
 
-const DRUM_ROWS: DrumRow[] = [
+const DRUM_ROWS = [
   { name:'Image 01', rowClass:'framer-jqyyw2', cardA:'framer-61s6s8',  cardB:'framer-136ky85', rotateY: 90  },
   { name:'Image 02', rowClass:'framer-ybx3e6', cardA:'framer-1so9oqn', cardB:'framer-qhp8iz',  rotateY: 120 },
   { name:'Image 03', rowClass:'framer-bfxn5x', cardA:'framer-5e9gtl',  cardB:'framer-1ukzqzj', rotateY: 150 },
@@ -256,26 +237,24 @@ const DRUM_ROWS: DrumRow[] = [
   { name:'Image 06', rowClass:'framer-f1eujk', cardA:'framer-1gbvn36', cardB:'framer-1qeudci', rotateY: 30  },
 ];
 
-function buildImage(photo: CarouselPhoto): string {
+function buildImage(photo) {
   const isExternal = /^https?:\/\//.test(photo.src);
   const alt = photo.alt.replace(/"/g, '&quot;');
   if (isExternal) {
     return `<img src="${photo.src}" alt="${alt}" loading="lazy" decoding="async" width="280" height="400">`;
   }
   return `<picture>
-    <source srcset="${photo.src}.webp" type="image/webp">
-    <img src="${photo.src}.jpg" alt="${alt}" loading="lazy" decoding="async" width="280" height="400">
+    <source srcset="${base}${photo.src}.webp" type="image/webp">
+    <img src="${base}${photo.src}.jpg" alt="${alt}" loading="lazy" decoding="async" width="280" height="400">
   </picture>`;
 }
 
-function renderDrum(): void {
+function renderDrum() {
   const circle = document.querySelector('[data-drum-circle]');
   if (!circle) return;
-
   if (CAROUSEL_PHOTOS.length < 12) {
     console.warn(`[carousel] Se esperaban 12 fotos, hay ${CAROUSEL_PHOTOS.length}.`);
   }
-
   circle.innerHTML = DRUM_ROWS.map((row, i) => {
     const photoA = CAROUSEL_PHOTOS[i * 2]     ?? { src: '', alt: '' };
     const photoB = CAROUSEL_PHOTOS[i * 2 + 1] ?? { src: '', alt: '' };
@@ -289,17 +268,17 @@ function renderDrum(): void {
 
 renderDrum();
 
-// ── Parallax sutil del drum ──────────────────────────────────
+// Parallax sutil del drum
 (function () {
   const reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const drumEl  = document.querySelector('.framer-wf0kvx') as HTMLElement | null;
+  const drumEl  = document.querySelector('.framer-wf0kvx');
   if (reduce || !drumEl) return;
 
   let ticking = false;
-  function update(): void {
+  function update() {
     const y = window.scrollY;
     if (y < 1200) {
-      drumEl!.style.transform = `matrix(1,0,0,1,-800,${y * 0.06})`;
+      drumEl.style.transform = `matrix(1,0,0,1,-800,${y * 0.06})`;
     }
     ticking = false;
   }

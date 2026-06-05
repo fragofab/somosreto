@@ -1,9 +1,10 @@
 ---
 // Visit.astro — CTA de cierre con foto de fondo + parallax
+const base = import.meta.env.BASE_URL;
 ---
 
 <section class="visit" id="visit">
-  <div class="visit-photo-bg" data-parallax="0.22" aria-hidden="true"></div>
+  <div class="visit-photo-bg" data-parallax="0.22" aria-hidden="true" style={`background-image:url('${base}Reto-Comunidad-Photo.jpg')`}></div>
   <div class="container">
     <div class="visit-inner">
       <div class="eyebrow eyebrow-dot reveal">Te esperamos</div>
@@ -36,7 +37,6 @@
 }
 .visit-photo-bg {
   position: absolute; left: 0; right: 0; top: -15%; bottom: -15%; z-index: 0;
-  background-image: url('/Reto-Comunidad-Photo.jpg');
   background-size: cover; background-position: center 72%;
   opacity: .18; filter: saturate(1.05) contrast(.98); will-change: transform;
 }
