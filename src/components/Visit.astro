@@ -1,10 +1,10 @@
 ---
 // Visit.astro — CTA de cierre con foto de fondo + parallax
-const base = import.meta.env.BASE_URL;
+import { asset } from '../utils/asset';
 ---
 
 <section class="visit" id="visit">
-  <div class="visit-photo-bg" data-parallax="0.22" aria-hidden="true" style={`background-image:url('${base}Reto-Comunidad-Photo.jpg')`}></div>
+  <div class="visit-photo-bg" data-parallax="0.22" aria-hidden="true" style={`background-image:url('${asset('Reto-Comunidad-Photo.jpg')}')`}></div>
   <div class="container">
     <div class="visit-inner">
       <div class="eyebrow eyebrow-dot reveal">Te esperamos</div>

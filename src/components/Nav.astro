@@ -1,6 +1,6 @@
 ---
 // Nav.astro — Pill flotante centrado, navy permanente, backdrop-blur
-const base = import.meta.env.BASE_URL;
+import { asset } from '../utils/asset';
 ---
 
 <nav id="mainNav">
@@ -10,7 +10,7 @@ const base = import.meta.env.BASE_URL;
       <a href="#ministerios">Ministerios</a>
     </div>
     <a class="nav-brand" href="#top" aria-label="RETO">
-      <img src={`${base}Logo-RETO-2026-No-slogan.png`} alt="RETO" />
+     <img src={asset('Logo-RETO-2026-No-slogan.png')} alt="RETO" />
     </a>
     <div class="nav-right">
       <a href="#contacto">Contacto</a>

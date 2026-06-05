@@ -1,6 +1,6 @@
 ---
 // Hero.astro — Headline centrado + drum 3D carousel (Framer verbatim)
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <section class="hero" id="top">
@@ -244,9 +244,9 @@ function buildImage(photo) {
     return `<img src="${photo.src}" alt="${alt}" loading="lazy" decoding="async" width="280" height="400">`;
   }
   return `<picture>
-    <source srcset="${base}${photo.src}.webp" type="image/webp">
-    <img src="${base}${photo.src}.jpg" alt="${alt}" loading="lazy" decoding="async" width="280" height="400">
-  </picture>`;
+  <source srcset="${base}/${photo.src}.webp" type="image/webp">
+  <img src="${base}/${photo.src}.jpg" alt="${alt}" loading="lazy" decoding="async" width="280" height="400">
+</picture>`;
 }
 
 function renderDrum() {

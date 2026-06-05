@@ -1,12 +1,11 @@
 ---
 // Ministerios.astro — Split sticky + accordion
-const base = import.meta.env.BASE_URL;
+import { asset } from "../utils/asset";
 ---
 
 <section class="ministerios" id="ministerios">
   <div class="container">
     <div class="split-wrap">
-
       <div class="split-left">
         <div class="top">
           <div class="eyebrow eyebrow-dot">Nuestros Ministerios</div>
@@ -16,11 +15,36 @@ const base = import.meta.env.BASE_URL;
           </h2>
         </div>
         <div class="split-photo">
-          <div class="split-img active" data-i="0" style={`background-image:url('${base}photos/ministerios/01-servicio-comunidad.jpg')`}></div>
-          <div class="split-img" data-i="1" style={`background-image:url('${base}photos/ministerios/02-grupo-jovenes.jpg')`}></div>
-          <div class="split-img" data-i="2" style={`background-image:url('${base}photos/ministerios/03-club-ninos.jpg')`}></div>
-          <div class="split-img" data-i="3" style={`background-image:url('${base}photos/ministerios/04-grupos-hogarenos.jpg')`}></div>
-          <div class="split-img" data-i="4" style={`background-image:url('${base}photos/ministerios/05-grupo-varones.jpg')`}></div>
+          <div
+            class="split-img active"
+            data-i="0"
+            style={`background-image:url('${asset("photos/ministerios/01-servicio-comunidad.jpg")}')`}
+          >
+          </div>
+          <div
+            class="split-img"
+            data-i="1"
+            style={`background-image:url('${asset("photos/ministerios/02-grupo-jovenes.jpg")}')`}
+          >
+          </div>
+          <div
+            class="split-img"
+            data-i="2"
+            style={`background-image:url('${asset("photos/ministerios/03-club-ninos.jpg")}')`}
+          >
+          </div>
+          <div
+            class="split-img"
+            data-i="3"
+            style={`background-image:url('${asset("photos/ministerios/04-grupos-hogarenos.jpg")}')`}
+          >
+          </div>
+          <div
+            class="split-img"
+            data-i="4"
+            style={`background-image:url('${asset("photos/ministerios/05-grupo-varones.jpg")}')`}
+          >
+          </div>
           <div class="ph-caption">
             <div class="pc-title" id="splitPhTitle">Servicio en Comunidad</div>
           </div>
@@ -28,19 +52,34 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="split-right">
-        <p class="split-lede">Una iglesia viva crea espacios donde el discipulado se profundiza y la comunidad se fortalece. Te invitamos a conocer los nuestros.</p>
+        <p class="split-lede">
+          Una iglesia viva crea espacios donde el discipulado se profundiza y la
+          comunidad se fortalece. Te invitamos a conocer los nuestros.
+        </p>
 
         <div class="split-acc" id="splitAcc">
-
           <div class="acc-row is-open" data-i="0">
             <button class="acc-head" type="button">
               <span class="a-title">Servicio en Comunidad</span>
               <span class="a-chip">Semanal</span>
-              <span class="a-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>
+              <span class="a-icon"
+                ><svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg
+                ></span
+              >
             </button>
             <div class="acc-body">
               <div class="acc-body-inner">
-                <p>Un tiempo dominical donde adoramos juntos, escuchamos la Palabra y fortalecemos la comunidad de fe.</p>
+                <p>
+                  Un tiempo dominical donde adoramos juntos, escuchamos la
+                  Palabra y fortalecemos la comunidad de fe.
+                </p>
                 <div class="a-meta">
                   <span class="a-when">Domingos · 10:00 a.m.</span>
                   <a href="#contacto" class="a-cta">Únete este domingo →</a>
@@ -53,11 +92,24 @@ const base = import.meta.env.BASE_URL;
             <button class="acc-head" type="button">
               <span class="a-title">Grupo para Jóvenes</span>
               <span class="a-chip">Quincenal</span>
-              <span class="a-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>
+              <span class="a-icon"
+                ><svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg
+                ></span
+              >
             </button>
             <div class="acc-body">
               <div class="acc-body-inner">
-                <p>Encuentros pensados para jóvenes — amistad auténtica, propósito y vida cristiana en comunidad.</p>
+                <p>
+                  Encuentros pensados para jóvenes — amistad auténtica,
+                  propósito y vida cristiana en comunidad.
+                </p>
                 <div class="a-meta">
                   <span class="a-when">2 Sábados al mes · 7:00 p.m.</span>
                   <a href="#contacto" class="a-cta">Quiero ir →</a>
@@ -70,13 +122,28 @@ const base = import.meta.env.BASE_URL;
             <button class="acc-head" type="button">
               <span class="a-title">Club de Niños</span>
               <span class="a-chip">Quincenal</span>
-              <span class="a-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>
+              <span class="a-icon"
+                ><svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg
+                ></span
+              >
             </button>
             <div class="acc-body">
               <div class="acc-body-inner">
-                <p>Un espacio seguro en Parque El Bolsillo donde los niños aprenden, juegan y descubren el amor de Dios.</p>
+                <p>
+                  Un espacio seguro en Parque El Bolsillo donde los niños
+                  aprenden, juegan y descubren el amor de Dios.
+                </p>
                 <div class="a-meta">
-                  <span class="a-when">Parque El Bolsillo · 2 Sábados al mes</span>
+                  <span class="a-when"
+                    >Parque El Bolsillo · 2 Sábados al mes</span
+                  >
                   <a href="#contacto" class="a-cta">Llevar a mis hijos →</a>
                 </div>
               </div>
@@ -87,11 +154,24 @@ const base = import.meta.env.BASE_URL;
             <button class="acc-head" type="button">
               <span class="a-title">Grupos Hogareños</span>
               <span class="a-chip">Semanal</span>
-              <span class="a-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>
+              <span class="a-icon"
+                ><svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg
+                ></span
+              >
             </button>
             <div class="acc-body">
               <div class="acc-body-inner">
-                <p>Casas abiertas durante la semana donde profundizamos en la Palabra, oramos y compartimos la vida.</p>
+                <p>
+                  Casas abiertas durante la semana donde profundizamos en la
+                  Palabra, oramos y compartimos la vida.
+                </p>
                 <div class="a-meta">
                   <span class="a-when">Entre semana · casas abiertas</span>
                   <a href="#contacto" class="a-cta">Encontrar un hogar →</a>
@@ -104,11 +184,24 @@ const base = import.meta.env.BASE_URL;
             <button class="acc-head" type="button">
               <span class="a-title">Grupo de Varones</span>
               <span class="a-chip">Mensual</span>
-              <span class="a-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>
+              <span class="a-icon"
+                ><svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg
+                ></span
+              >
             </button>
             <div class="acc-body">
               <div class="acc-body-inner">
-                <p>Hombres creciendo en propósito, responsabilidad y liderazgo espiritual dentro de sus familias y comunidad.</p>
+                <p>
+                  Hombres creciendo en propósito, responsabilidad y liderazgo
+                  espiritual dentro de sus familias y comunidad.
+                </p>
                 <div class="a-meta">
                   <span class="a-when">1 vez al mes</span>
                   <a href="#contacto" class="a-cta">Sumarme →</a>
@@ -116,7 +209,6 @@ const base = import.meta.env.BASE_URL;
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -124,158 +216,331 @@ const base = import.meta.env.BASE_URL;
 </section>
 
 <style is:global>
-.ministerios {
-  position: relative;
-  background: var(--navy-900); color: #fff;
-  padding: 130px 0; overflow: hidden;
-}
-.ministerios::before {
-  content: ''; position: absolute; top: -200px; left: -200px;
-  width: 500px; height: 500px; border-radius: 50%;
-  background: var(--grad-navy-peach); filter: blur(80px); opacity: .35; pointer-events: none;
-}
-.ministerios::after {
-  content: ''; position: absolute; bottom: -200px; right: -200px;
-  width: 500px; height: 500px; border-radius: 50%;
-  background: radial-gradient(circle, #bcd9c3 0%, transparent 60%);
-  filter: blur(80px); opacity: .2; pointer-events: none;
-}
-.split-wrap {
-  position: relative; z-index: 2;
-  display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr);
-  gap: 64px; align-items: stretch;
-}
-.split-left { display: flex; flex-direction: column; gap: 40px }
-.split-left .eyebrow { color: rgba(255,255,255,.55) }
+  .ministerios {
+    position: relative;
+    background: var(--navy-900);
+    color: #fff;
+    padding: 130px 0;
+    overflow: hidden;
+  }
+  .ministerios::before {
+    content: "";
+    position: absolute;
+    top: -200px;
+    left: -200px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: var(--grad-navy-peach);
+    filter: blur(80px);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .ministerios::after {
+    content: "";
+    position: absolute;
+    bottom: -200px;
+    right: -200px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #bcd9c3 0%, transparent 60%);
+    filter: blur(80px);
+    opacity: 0.2;
+    pointer-events: none;
+  }
+  .split-wrap {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 64px;
+    align-items: stretch;
+  }
+  .split-left {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .split-left .eyebrow {
+    color: rgba(255, 255, 255, 0.55);
+  }
 
-.split-h2 {
-  font-family: 'Fraunces', serif; font-weight: 300;
-  font-size: clamp(2rem, 3.6vw, 3.25rem); line-height: 1.02; letter-spacing: -.03em;
-  color: #fff; margin-top: 18px;
-}
-.split-h2 .l1 { display: block; font-weight: 300; color: #fff }
-.split-h2 .l2 {
-  display: block; font-weight: 400; font-style: italic;
-  background: linear-gradient(95deg, #f2c5a3 0%, #e3be78 50%, #f2c5a3 100%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-.split-photo {
-  position: sticky; top: 120px;
-  height: 100%; min-height: 624px;
-  border-radius: var(--r-lg); overflow: hidden;
-  background: var(--navy-800);
-  border: 1px solid rgba(255,255,255,.07);
-  box-shadow: 0 50px 100px -40px rgba(0,0,0,.7);
-  align-self: stretch;
-}
-.split-img {
-  position: absolute; inset: 0;
-  background-size: cover; background-position: center;
-  opacity: 0; transform: scale(1.05);
-  transition: opacity 1s var(--e-out), transform 1.4s var(--e-out);
-}
-.split-img.active { opacity: 1; transform: scale(1) }
-.split-photo::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(20,26,45,0) 60%, rgba(20,26,45,.55) 100%);
-  pointer-events: none; z-index: 2;
-}
-.split-photo .ph-caption { position: absolute; left: 24px; bottom: 22px; z-index: 3 }
-.split-photo .ph-caption .pc-title {
-  font-family: 'Fraunces', serif; font-weight: 300; font-size: 1.375rem;
-  color: #fff; letter-spacing: -.02em; line-height: 1.1;
-  transition: opacity .4s var(--e-out);
-}
-.split-right {
-  position: relative; display: flex;
-  flex-direction: column; justify-content: flex-start; gap: 38px;
-}
-.split-lede {
-  max-width: 48ch; margin-top: 56px;
-  color: #fff; font-size: 1rem; line-height: 1.6; padding-right: 8px;
-}
-.split-acc {
-  position: absolute; left: 0; right: 0;
-  top: calc(100% - 312px); transform: translateY(-50%);
-  display: flex; flex-direction: column; width: 100%;
-}
-.acc-row {
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  transition: border-color .4s var(--e-out);
-}
-.acc-row:first-child { border-top: 1px solid rgba(255,255,255,.08) }
-.acc-row.is-open { border-color: rgba(242,197,163,.25) }
-.acc-head {
-  width: 100%;
-  display: grid; grid-template-columns: 1fr auto auto; gap: 18px; align-items: center;
-  padding: 22px 4px;
-  background: transparent; border: none; cursor: pointer;
-  text-align: left; color: #fff;
-  transition: padding .4s var(--e-out);
-}
-.acc-head .a-title {
-  font-family: 'Fraunces', serif; font-weight: 400;
-  font-size: clamp(1.25rem, 1.8vw, 1.625rem); letter-spacing: -.015em;
-  color: rgba(255,255,255,.85); transition: color .4s var(--e-out);
-}
-.acc-row.is-open .a-title { color: #fff }
-.acc-head .a-chip {
-  padding: 6px 12px; border-radius: var(--r-pill);
-  font-size: .6875rem; letter-spacing: .12em; text-transform: uppercase;
-  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
-  color: rgba(255,255,255,.6); transition: all .4s var(--e-out);
-}
-.acc-row.is-open .a-chip { background: var(--grad-pill); color: var(--navy-900); border-color: transparent }
-.acc-head .a-icon {
-  width: 36px; height: 36px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.12);
-  display: grid; place-items: center; color: rgba(255,255,255,.5);
-  transition: all .5s var(--e-out);
-}
-.acc-head .a-icon svg { transition: transform .5s var(--e-out) }
-.acc-row.is-open .a-icon {
-  background: rgba(242,197,163,.12); border-color: rgba(242,197,163,.4); color: #f2c5a3;
-}
-.acc-row.is-open .a-icon svg { transform: rotate(180deg) }
-.acc-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .55s var(--e-out) }
-.acc-row.is-open .acc-body { grid-template-rows: 1fr }
-.acc-body-inner { overflow: hidden; min-height: 0 }
-.acc-body p {
-  font-size: .9375rem; color: rgba(255,255,255,.65); line-height: 1.6;
-  max-width: 48ch; padding: 0 0 12px 4px;
-}
-.acc-body .a-meta { display: flex; align-items: center; gap: 14px; padding: 0 0 24px 4px }
-.acc-body .a-when { font-size: .8125rem; color: rgba(255,255,255,.55); letter-spacing: .03em }
-.acc-body .a-cta {
-  font-size: .8125rem; color: #f2c5a3; letter-spacing: .04em;
-  display: inline-flex; align-items: center; gap: 6px;
-  padding-left: 14px; border-left: 1px solid rgba(255,255,255,.1);
-}
+  .split-h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 300;
+    font-size: clamp(2rem, 3.6vw, 3.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: #fff;
+    margin-top: 18px;
+  }
+  .split-h2 .l1 {
+    display: block;
+    font-weight: 300;
+    color: #fff;
+  }
+  .split-h2 .l2 {
+    display: block;
+    font-weight: 400;
+    font-style: italic;
+    background: linear-gradient(95deg, #f2c5a3 0%, #e3be78 50%, #f2c5a3 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .split-photo {
+    position: sticky;
+    top: 120px;
+    height: 100%;
+    min-height: 624px;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    background: var(--navy-800);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 50px 100px -40px rgba(0, 0, 0, 0.7);
+    align-self: stretch;
+  }
+  .split-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transform: scale(1.05);
+    transition:
+      opacity 1s var(--e-out),
+      transform 1.4s var(--e-out);
+  }
+  .split-img.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .split-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(20, 26, 45, 0) 60%,
+      rgba(20, 26, 45, 0.55) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+  .split-photo .ph-caption {
+    position: absolute;
+    left: 24px;
+    bottom: 22px;
+    z-index: 3;
+  }
+  .split-photo .ph-caption .pc-title {
+    font-family: "Fraunces", serif;
+    font-weight: 300;
+    font-size: 1.375rem;
+    color: #fff;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    transition: opacity 0.4s var(--e-out);
+  }
+  .split-right {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 38px;
+  }
+  .split-lede {
+    max-width: 48ch;
+    margin-top: 56px;
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.6;
+    padding-right: 8px;
+  }
+  .split-acc {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% - 312px);
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .acc-row {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: border-color 0.4s var(--e-out);
+  }
+  .acc-row:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .acc-row.is-open {
+    border-color: rgba(242, 197, 163, 0.25);
+  }
+  .acc-head {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 18px;
+    align-items: center;
+    padding: 22px 4px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    color: #fff;
+    transition: padding 0.4s var(--e-out);
+  }
+  .acc-head .a-title {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+    letter-spacing: -0.015em;
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 0.4s var(--e-out);
+  }
+  .acc-row.is-open .a-title {
+    color: #fff;
+  }
+  .acc-head .a-chip {
+    padding: 6px 12px;
+    border-radius: var(--r-pill);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.4s var(--e-out);
+  }
+  .acc-row.is-open .a-chip {
+    background: var(--grad-pill);
+    color: var(--navy-900);
+    border-color: transparent;
+  }
+  .acc-head .a-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    display: grid;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.5s var(--e-out);
+  }
+  .acc-head .a-icon svg {
+    transition: transform 0.5s var(--e-out);
+  }
+  .acc-row.is-open .a-icon {
+    background: rgba(242, 197, 163, 0.12);
+    border-color: rgba(242, 197, 163, 0.4);
+    color: #f2c5a3;
+  }
+  .acc-row.is-open .a-icon svg {
+    transform: rotate(180deg);
+  }
+  .acc-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.55s var(--e-out);
+  }
+  .acc-row.is-open .acc-body {
+    grid-template-rows: 1fr;
+  }
+  .acc-body-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+  .acc-body p {
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.6;
+    max-width: 48ch;
+    padding: 0 0 12px 4px;
+  }
+  .acc-body .a-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 0 24px 4px;
+  }
+  .acc-body .a-when {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.03em;
+  }
+  .acc-body .a-cta {
+    font-size: 0.8125rem;
+    color: #f2c5a3;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding-left: 14px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-@media (max-width: 1100px) { .split-wrap { gap: 40px } }
-@media (max-width: 900px) {
-  .split-wrap { grid-template-columns: 1fr; gap: 28px }
-  .split-left, .split-right { display: contents }
-  .split-h2 { font-size: clamp(2.35rem, 9vw, 3.25rem) }
-  .split-lede { order: 2; max-width: 100%; margin-top: 0; padding-right: 0 }
-  .split-photo { order: 3; position: relative; top: auto; height: auto; min-height: 0; aspect-ratio: 40/33 }
-  .split-acc { order: 4; position: relative; left: auto; right: auto; top: auto; transform: none }
-}
+  @media (max-width: 1100px) {
+    .split-wrap {
+      gap: 40px;
+    }
+  }
+  @media (max-width: 900px) {
+    .split-wrap {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    .split-left,
+    .split-right {
+      display: contents;
+    }
+    .split-h2 {
+      font-size: clamp(2.35rem, 9vw, 3.25rem);
+    }
+    .split-lede {
+      order: 2;
+      max-width: 100%;
+      margin-top: 0;
+      padding-right: 0;
+    }
+    .split-photo {
+      order: 3;
+      position: relative;
+      top: auto;
+      height: auto;
+      min-height: 0;
+      aspect-ratio: 40/33;
+    }
+    .split-acc {
+      order: 4;
+      position: relative;
+      left: auto;
+      right: auto;
+      top: auto;
+      transform: none;
+    }
+  }
 </style>
 
 <script>
-const rows    = document.querySelectorAll<HTMLElement>('#splitAcc .acc-row');
-const imgs    = document.querySelectorAll<HTMLElement>('.split-photo .split-img');
-const phTitle = document.getElementById('splitPhTitle');
+  const rows = document.querySelectorAll<HTMLElement>("#splitAcc .acc-row");
+  const imgs = document.querySelectorAll<HTMLElement>(
+    ".split-photo .split-img",
+  );
+  const phTitle = document.getElementById("splitPhTitle");
 
-rows.forEach(row => {
-  row.querySelector('.acc-head')?.addEventListener('click', () => {
-    const i = parseInt(row.dataset.i ?? '0', 10);
-    rows.forEach(r => r.classList.remove('is-open'));
-    imgs.forEach(im => im.classList.remove('active'));
-    row.classList.add('is-open');
-    document.querySelector(`.split-img[data-i="${i}"]`)?.classList.add('active');
-    if (phTitle) phTitle.textContent = row.querySelector('.a-title')?.textContent ?? '';
+  rows.forEach((row) => {
+    row.querySelector(".acc-head")?.addEventListener("click", () => {
+      const i = parseInt(row.dataset.i ?? "0", 10);
+      rows.forEach((r) => r.classList.remove("is-open"));
+      imgs.forEach((im) => im.classList.remove("active"));
+      row.classList.add("is-open");
+      document
+        .querySelector(`.split-img[data-i="${i}"]`)
+        ?.classList.add("active");
+      if (phTitle)
+        phTitle.textContent = row.querySelector(".a-title")?.textContent ?? "";
+    });
   });
-});
 </script>
