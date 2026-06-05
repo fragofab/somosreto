@@ -1,5 +1,5 @@
 # RETO — Contexto completo del proyecto web
-> Última actualización: 2026-06-04
+> Última actualización: 2026-06-05
 
 ---
 
@@ -19,9 +19,8 @@
 ## 2. Branding
 
 ### Logos
-- `Logo RETO.png` — versión base en blanco (para fondos oscuros)
-- `Logos Reto/Logo RETO 2026-05.png` — versión mayo 2026
-- `Logos Reto/Logo RETO 2026-06.png` — versión vigente (junio 2026)
+- `Logo-RETO-2026-No-slogan.png` — versión vigente sin slogan (nav)
+- `logos/Logo-RETO-2026-05.png` — versión mayo 2026 (footer)
 
 ### Paleta de colores
 ```css
@@ -46,23 +45,15 @@
 ```css
 --grad-navy-peach: radial-gradient(120% 90% at 0% 0%, #f2c5a3 0%, #a5887e 22%, #3b3d55 55%, #141a2d 100%)
 --grad-silver-cream: linear-gradient(115deg, #cfd1da 0%, #e0dfe2 45%, #f4eadd 100%)
---grad-pill: linear-gradient(90deg, #f2c5a3 0%, #bcd9c3 100%)       /* peach → mint */
+--grad-pill: linear-gradient(90deg, #f2c5a3 0%, #bcd9c3 100%)
 --grad-accent: linear-gradient(100deg, #a5887e 0%, #e3be78 40%, #f2c5a3 100%)
 ```
 
-### Tipografía (sistema actual v14+)
+### Tipografía
 | Rol | Familia | Peso | Notas |
 |---|---|---|---|
-| Display / headings | **Fraunces** | 300–400 | Variable, optical size 9–144; estilo editorial |
+| Display / headings | **Fraunces** | 300–400 | Variable, optical size 9–144 |
 | Body / UI | **Inter** | 300–600 | System fallback sans-serif |
-
-Escala tipográfica con `clamp()`:
-```css
-h1: clamp(2.6rem, 6vw, 5.25rem) / weight 300 / letter-spacing -.035em
-h2: clamp(2.1rem, 4.4vw, 3.75rem) / weight 300 / letter-spacing -.03em
-h3: clamp(1.4rem, 2.4vw, 2rem) / weight 400 / letter-spacing -.02em
-eyebrow: 0.6875rem / weight 500 / uppercase / letter-spacing .22em
-```
 
 ### Sistema de radii
 ```css
@@ -79,331 +70,246 @@ eyebrow: 0.6875rem / weight 500 / uppercase / letter-spacing .22em
 
 ---
 
-## 3. Archivos de diseño (print)
+## 3. Stack técnico
 
-| Archivo | Descripción |
+| Capa | Tecnología |
 |---|---|
-| `01_Reto Trifold Front_A/B/C.jpg` | Portada del tri-fold, 3 variantes de diseño |
-| `02_Reto Trifold Back_A/B/C.jpg` | Reverso del tri-fold, 3 variantes |
-| `01_Reto Trifold Front_Print.pdf` | PDF listo para impresión (portada) |
-| `02_Reto Trifold Back_Print.pdf` | PDF listo para impresión (reverso) |
-| `Links/` | Archivos vinculados de InDesign/AI (PSDs, ilustraciones) |
-| `Reto Branding.png` | Guía de identidad visual |
+| Framework | **Astro** (static output) |
+| Lenguaje | **TypeScript** (strict) |
+| Testing E2E | **Playwright** (Chromium + Firefox + WebKit + Mobile) |
+| Testing Unit | **Vitest** |
+| CI/CD | **GitHub Actions** |
+| Hosting | **GitHub Pages** |
+| Node.js | v24 |
 
----
+### Repositorio
+- URL: `https://github.com/fragofab/reto-website`
+- Branch principal: `main`
+- Deploy automático: push a `main` → GitHub Actions → GitHub Pages
+- URL producción: `https://fragofab.github.io/reto-website`
 
-## 4. Landing page — historial de versiones
-
-### Versión inicial (landing-reto.html)
-- Primera iteración generada sin referencia visual aplicada
-- Layout estático: hero dark, nav con logo invertido, marquee horizontal de fotos (Unsplash)
-- Problema: ignoró la referencia Frameblox/07 — demasiado genérico
-
-### Sesión "Analyze design reference and create HTML"
-- Primer intento de replicar `framebloxpages.framer.website/landing/07`
-- Confusión inicial: se intentó primero como cilindro 3D, luego como marquee plano
-- Iteraciones v1 → v3 con distintos enfoques de carousel
-- Descubrimiento clave: el efecto correcto no es marquee lineal ni cilindro — es un **drum 3D** (6 filas en tambor) con curva tipo "U" abierta
-
-### Sesión "Extract literal code from Framer website"
-- Se usó **Chrome MCP** para extraer el DOM + CSS verbatim del sitio Framer en producción
-- Extracción literal de:
-  - `outerHTML` del contenedor `.framer-ux3tlg-container`
-  - 10 reglas CSS del stylesheet (sin modificar)
-  - Análisis de dependencias: Framer Motion, React interno, runtime `events.framer.com`
-- Hallazgo crítico: la animación `rotateY` del `.framer-18sfqik` es **JS puro de Framer Motion** (no hay `@keyframes` — se muta frame a frame vía `rAF`). No es portable directamente.
-- Arquitectura del componente documentada: 6 "rows" con `rotateY` fijo (0°/30°/60°/90°/120°/150°) cada uno con 2 cards hijas `rotateY(±90°)`, `280×400px`, `border-radius:20px`, `backface-visibility:hidden`
-- Los archivos de extracción se guardaron inicialmente en `ITJ/Extractions/` (error de carpeta) y luego movidos a RETO
-
-### Sesión "Extract and replicate carousel animation styles" (v4–v5)
-- Problema con v3: las fotos salían demasiado hacia adentro — debían casi tocar los bordes del drum
-- Solución: **wrapper 1600px fijo centrado** (igual que la referencia Framer)
-  - `width:1600px; left:50%; transform:matrix(1,0,0,1,-800,0)`
-- `mask-image` horizontal con stops exactos del CSS source: `19.72% / 80%`
-- Sin overlays externos — la máscara del wrapper hace el fade lateral
-- Responsive: matrix translate compensado para escalar a 85% (tablet) y 65% (móvil)
-- Animación: `@keyframes drum-spin` reemplaza el Framer Motion JS
-  ```css
-  @keyframes drum-spin {
-    from { transform: perspective(600px) rotateY(0deg); }
-    to   { transform: perspective(600px) rotateY(360deg); }
-  }
-  animation: drum-spin 64s linear infinite; /* en el .framer-18sfqik */
-  ```
-
-### Sesión "Redesign landing page layout" (v6–v13)
-
-**v6–v10:** Refinamientos del carousel, ajustes de layout hero, múltiples experimentos de composición.
-
-**v11 — Enfoque Finovate:**
-- Fuente única: **Work Sans** con clamp + letter-spacing negativo
-- Sistema radii completo: `--r-pill 100px`, `--r-sm 12px`, `--r-lg 28px`, `--r-xl 36px`
-- Nav flotante pill con backdrop-blur, inversión al scroll
-- Hero con esquinas inferiores redondeadas, CTA pill con arrow-rotate, eyebrow con pulse-dot
-- Fundamentos: cards cream-3 con hover lift + border gold
-- Servicios: items con hover → card blanco + icono rotado -15°
-- Quote: wrapper rounded 36px (efecto "carta")
-- Contacto: cards individuales por item, mapa con radius 36px
-- Footer: wrapper rounded 36px
-
-**v12 — Split asimétrico + Bento:**
-- Hero split 1.35:1: headline izquierda, tile gradiente navy→peach derecha
-- Carousel 3D drum → sección propia separada del hero
-- Scripture ribbon: marquee horizontal con versículo sobre gradiente navy→peach (42s)
-- Bento asimétrico: 5 cards con proporciones diferentes, gradientes por card
-- Ministerios sticky scroll (estilo Finovate): columna izquierda sticky con contador, columna derecha con 5 cards activadas por IntersectionObserver + barras de progreso
-- Animaciones: parallax en hero-right, reveal staggered con delays
-
-**v13 — Editorial Magazine (exploración):**
-- Triple stack tipográfico: **Playfair Display 900** (display) + **Source Serif 4** (cuerpo) + **JetBrains Mono** (metadata)
-- Drop cap 5.4em via `::first-letter`, pull quotes con rule 2px
-- Bento asimétrico con rules duras 2px (no gradientes suaves)
-- Captions `FIG. 01 — …`, marcadores `§ 01`, `№ 01`
-- Ministerios sticky: índice en números romanos (i./ii./iii./iv./v.)
-- Footer con masthead tipo revista + colophon tipográfico
-- **Nota:** esta dirección no se continuó — se descartó a favor del sistema Fraunces+Inter
-
-### Sesión "Analyze video and fix image cropping" (v11 refinado)
-- Continuación de ajustes al approach Finovate antes de cambiar a v12+
-
-### Versión consolidada v14 → v19
-
-A partir de **v14** se establece el design system definitivo que combina:
-- Hero centrado estilo Frameblox/07 + drum carousel verbatim (v8/v5)
-- Paleta y gradientes de v12 (navy-peach, silver-cream, pill)
-- Tipografía Fraunces + Inter
-- Scroll-triggered reveals con stagger
-- Contacto con mapa iframe + panel navy flotante
-- WhatsApp integración
-
-| Versión | Cambio principal |
-|---|---|
-| v14 | Consolidación definitiva: hero centrado + drum + paleta v12 + contacto con mapa |
-| v15 | Nav pill centered fix (`justify-content:center`) |
-| v16 | Refinamientos de spacing y layout |
-| v17 | Array `CAROUSEL_PHOTOS` para gestión de las 12 fotos del drum por slots |
-| v18 | WhatsApp FAB (botón flotante sticky), sección "Visita" (`#visit`) |
-| v19 | Ajustes finales; base para `_deploy_v19/` |
-
-**`_deploy_v19/index.html`** = versión de producción (sin número de versión en título, `<meta name="robots" content="noindex, nofollow">`)
-
----
-
-## 5. Estructura de la landing (estado actual — v19)
-
+### Estructura del proyecto
 ```
-<nav>           Pill flotante centrado, navy permanente, backdrop-blur
-<section#top>   Hero: headline centrado + drum 3D carousel
-<section#fundamentos>  3 fundamentos de la iglesia
-<section#ministerios>  Split sticky: panel foto + accordion de ministerios
-<section#contacto>     Mapa + panel navy con info de contacto
-<section#visit>        "Te esperamos" — CTA con WhatsApp
-<footer>        Logo, nav links, redes sociales
-<a.fab-whatsapp>  FAB de WhatsApp (sticky, visible al hacer scroll)
+reto-website/
+├── .github/
+│   └── workflows/
+│       ├── deploy.yml          # GitHub Actions → GitHub Pages
+│       └── test.yml            # Playwright en PR
+├── src/
+│   ├── components/
+│   │   ├── Nav.astro
+│   │   ├── Hero.astro          # Hero + drum carousel 3D
+│   │   ├── Fundamentos.astro   # 3 pilares
+│   │   ├── Ministerios.astro   # Accordion sticky
+│   │   ├── Contacto.astro      # Mapa + panel navy
+│   │   ├── Visit.astro         # CTA visit
+│   │   ├── Footer.astro
+│   │   └── FabWhatsapp.astro   # Floating WhatsApp button
+│   ├── layouts/
+│   │   └── BaseLayout.astro    # HTML base, fonts, meta, CSS tokens
+│   ├── pages/
+│   │   └── index.astro         # EPIC-001: Main page
+│   └── utils/
+│       └── asset.ts            # Helper centralizado para rutas de assets
+├── public/
+│   ├── Logo-RETO-2026-No-slogan.png
+│   ├── Discipulado.jpg
+│   ├── Reto-Comunidad-Photo.jpg
+│   ├── logos/
+│   │   └── Logo-RETO-2026-05.png
+│   └── photos/
+│       ├── carousel/           # 12 slots para drum carousel (01-12)
+│       ├── pilares/            # 01-reconciliacion, 02-transformacion, 03-discipulado
+│       └── ministerios/        # 01-servicio-comunidad ... 05-grupo-varones
+├── tests/
+│   ├── e2e/
+│   │   └── home.spec.ts        # Smoke tests
+│   └── unit/
+├── CONTEXT/
+│   ├── CONTEXTO-PROYECTO.md
+│   └── PLAYBOOK-replica-literal-framer.md
+├── astro.config.mjs
+├── playwright.config.ts
+├── tsconfig.json
+└── package.json
 ```
 
-### Secciones en detalle
+---
 
-**Nav**
-- Pill flotante `width: min(750px, calc(100% - 48px))`
-- Grid 3 columnas: nav-left | logo-center | nav-right
-- Logo: `Logo RETO.png` (blanco) a 55px de alto
-- Links: Comunidad / Ministerios / Contacto (izquierda) + Visita (derecha)
-- Mobile: hamburger → panel cream con blur
+## 4. Configuración crítica
 
-**Hero**
-- Fondo: `--cream-100` con dot-grid pattern sutil
-- Eyebrow animado con pulse-dot
-- H1 en Fraunces: "Donde las relaciones se reconcilian"
-- Sub: tagline completo
-- CTAs: pill "Únete a RETO" (navy) + link "Conoce más →"
-- Drum 3D carousel debajo del copy
+### astro.config.mjs
+```javascript
+import { defineConfig } from 'astro/config';
 
-**Drum 3D Carousel**
-- DOM verbatim de Framer (clases `framer-*` preservadas)
-- 6 rows × 2 cards = 12 slots de foto
-- Wrapper: `framer-n7oh7a` → `1200px wide, 500px height, overflow:hidden`
-- Animación: `.framer-18sfqik` → `@keyframes drum-spin 64s linear infinite`
-- Fotos: gestionadas vía array JS `CAROUSEL_PHOTOS` (12 slots)
-- Specs de foto: 7:10 vertical, cards 280×400px, border-radius 20px
+const isProd = process.env.NODE_ENV === 'production';
 
-**Fundamentos (3 cards)**
-1. Reconciliar Relaciones
-2. Transformar Vidas
-3. Multiplicar Discípulos
+export default defineConfig({
+  site: 'https://fragofab.github.io',
+  base: isProd ? '/reto-website' : '/',
+  output: 'static',
+});
+```
 
-**Ministerios (sticky scroll)**
-- Panel izquierdo sticky: foto + título que cambian por IntersectionObserver
-- Panel derecho: accordion / cards por ministerio
-- Título de sección: "Servicio en Comunidad"
-- Incluye: Grupo para Jóvenes + otros ministerios
+### asset() helper — src/utils/asset.ts
+```typescript
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-**Contacto**
-- Mapa: iframe de Google Maps con filtro grayscale
-- Panel navy flotante con: dirección, horarios, teléfono/WhatsApp, correo
-- WhatsApp: `https://wa.me/523311522916`
-
-**Visita**
-- CTA de cierre: "Te esperamos"
-- Foto de la comunidad
-- Botón WhatsApp
+export function asset(path: string): string {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${base}${cleanPath}`;
+}
+```
+**Uso:** `asset('photos/pilares/01-reconciliacion.jpg')` — resuelve rutas locales con BASE_URL correcto en dev y prod.
 
 ---
 
-## 6. Archivos de exploración por sección
-
-| Archivo | Contenido |
-|---|---|
-| `reto-ministerios-opciones.html` | 3 propuestas de layout para sección ministerios con fotografía |
-| `reto-contacto-opciones.html` | Opciones de diseño para sección contacto |
-| `reto-visita-opciones.html` | 6 propuestas para sección "Te esperamos" |
-| `reto-footer-propuestas.html` | Footer propuesta 1 |
-| `reto-footer-propuestas-v2.html` | Footer propuesta 2 |
-| `reto-footer-propuestas-v3.html` | Footer propuesta 3 (minimal) |
-| `preview-gradients.html` | Preview de la paleta de gradientes |
-| `hero-3d-carousel.html` | Componente drum carousel aislado |
-
----
-
-## 7. Drum Carousel — especificaciones técnicas
+## 5. Drum Carousel — especificaciones técnicas
 
 ### Arquitectura DOM (verbatim Framer)
 ```
-.framer-ux3tlg-container       → contenedor flex, 600px height
-  .framer-SrCqw.framer-n7oh7a  → 1200px wide, 500px, overflow:hidden
-    .framer-18sfqik             → JS-animated slider (rotateY dinámico)
-      .framer-1j38ets           → "Circle": padre estático de los 6 rows
-        .framer-jqyyw2          → Row 01: rotateY(90deg)
-        .framer-ybx3e6          → Row 02: rotateY(120deg)
-        .framer-bfxn5x          → Row 03: rotateY(150deg)
-        .framer-80t3x0          → Row 04: rotateY(180deg)
-        .framer-ce9hg6          → Row 05: rotateY(60deg)
-        .framer-f1eujk          → Row 06: rotateY(30deg)
+.framer-wf0kvx                 → wrapper externo 1600px, mask-image fade lateral
+  .framer-ux3tlg-container     → 840px height
+    .framer-n7oh7a             → flex row, overflow visible
+      .framer-18sfqik          → JS-animated slider (@keyframes drum-spin)
+        .framer-1j38ets        → "Circle": padre de los 6 rows
+          .framer-jqyyw2       → Row 01: rotateY(90deg)
+          .framer-ybx3e6       → Row 02: rotateY(120deg)
+          .framer-bfxn5x       → Row 03: rotateY(150deg)
+          .framer-80t3x0       → Row 04: rotateY(180deg)
+          .framer-ce9hg6       → Row 05: rotateY(60deg)
+          .framer-f1eujk       → Row 06: rotateY(30deg)
 ```
 
-Cada row: `width:1400px, height:400px, position:absolute, transform-style:preserve-3d`
-Cada card: `width:280px, height:400px, border-radius:20px, backface-visibility:hidden`
-
-### CSS crítico
+### Animación
 ```css
-/* Wrapper externo */
-.framer-SrCqw.framer-n7oh7a {
-  width: 1200px;
-  height: 500px;
-  overflow: hidden;
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 19.72%,
-    black 80%,
-    transparent 100%
-  );
-}
-
-/* Animación reemplazando Framer Motion */
 @keyframes drum-spin {
-  from { transform: perspective(600px) rotateY(0deg); }
-  to   { transform: perspective(600px) rotateY(360deg); }
+  from { transform: perspective(600px) rotateY(0deg) }
+  to   { transform: perspective(600px) rotateY(360deg) }
 }
 .framer-18sfqik {
-  animation: drum-spin 64s linear infinite;
+  animation: drum-spin 60s linear infinite;
   transform-style: preserve-3d;
-}
-
-/* @supports WebKit (gap → margin) — NO omitir */
-@supports (background: -webkit-named-image(i)) and (not (font-palette:dark)) {
-  .framer-SrCqw.framer-n7oh7a,
-  .framer-SrCqw .framer-18sfqik,
-  .framer-SrCqw .framer-1j38ets { gap: 0px; }
-  /* ... margin compensations ... */
 }
 ```
 
 ### Sistema de fotos (CAROUSEL_PHOTOS)
-- 12 slots numerados (`01.jpg` → `12.jpg`)
-- Specs: 7:10 aspect ratio, mín. 560×800px, máx. 120KB/archivo
-- Carpeta: `photos/carousel/` (requiere ser poblada con fotos reales)
-- Formato preferido: `.webp` (calidad 80) + fallback `.jpg` (calidad 82)
+- 12 slots en `Hero.astro` → array `CAROUSEL_PHOTOS`
+- Fotos actuales: framerusercontent.com (placeholders temporales)
+- Slot 01: `photos/carousel/01` (local, pendiente foto real)
+- Specs reales: 7:10 aspect ratio, mín. 560×800px, máx. 120KB
 
-### Responsive del carousel
-```css
-/* 1280px — scale matrix para contener en viewport */
-transform: matrix(.95, 0, 0, .95, 0, 0);
-
-/* 900px (tablet) */
-transform: matrix(.85, 0, 0, .85, 0, 0);
-
-/* 600px (mobile) */
-transform: matrix(.65, 0, 0, .65, 0, 0);
-```
-**Regla:** NO cambiar widths — usar `transform:matrix()` para escalar. Cambiar widths rompe la geometría 3D.
+### Bug conocido — Safari
+- El drum carousel se ve lineal en Safari (se ve correcto en Chrome)
+- Causa: Safari aplana 3D cuando hay `overflow: hidden` en ancestros
+- Status: **Pendiente** → registrado en backlog como STORY-SAF-001
 
 ---
 
-## 8. Playbook: réplica literal de efectos Framer/Webflow
+## 6. EPICs y Stories
 
-Documento completo en: `PLAYBOOK-replica-literal-framer.md`
+### EPIC-001: Main Page (Landing)
+| Story | Descripción | Status |
+|---|---|---|
+| STORY-001 | Setup inicial repo (Astro + TS + Playwright) | ✅ Done |
+| STORY-002 | Migrar index.html v19 a Astro (componentes) | ✅ Done |
+| STORY-003 | GitHub Actions deploy a GitHub Pages | ✅ Done |
+| STORY-004 | Poblar carousel con fotos reales de la congregación | ⏳ Pending |
+| STORY-005 | SEO básico (meta, OG tags, quitar noindex) | ⏳ Pending |
+| STORY-006 | Analytics (Google Analytics 4) | ⏳ Pending |
+| STORY-SAF-001 | Fix drum carousel en Safari | ⏳ Pending |
+| STORY-CSS-001 | Renombrar clases framer-* a nombres semánticos | ⏳ Pending |
+| STORY-PAR-001 | Reimplementar parallax Visit con Intersection Observer | ⏳ Pending |
 
-**Principio rector:** Extraer antes de interpretar. Los sitios compilados generan CSS con valores calculados por engines propietarios.
+### EPIC-002: Blog
+| Story | Descripción | Status |
+|---|---|---|
+| STORY-007 | Diseño layout blog listing | ⏳ Pending |
+| STORY-008 | Diseño layout blog post | ⏳ Pending |
+| STORY-009 | Sistema de contenido (Markdown/MDX) | ⏳ Pending |
+| STORY-010 | Primer post de prueba | ⏳ Pending |
 
-**Fases:**
-1. **Auditoría** — identificar componente + motor de animación en Sources (Framer Motion, GSAP, Lenis, etc.)
-2. **Pausar para medir** — DevTools Animations → pausar → extraer transforms con animación congelada
-3. **Extracción literal** — Copy outerHTML verbatim, CSS desde Sources (no Computed), URLs de assets
-4. **Integración** — HTML/CSS verbatim, @keyframes reemplaza JS solo si es curva lineal simple
-5. **Verificación** — comparar lado a lado en 1920/1440/1200, responsive con matrix()
+### EPIC-003: Live Page
+| Story | Descripción | Status |
+|---|---|---|
+| STORY-011 | Diseño página en vivo | ⏳ Pending |
+| STORY-012 | Embed YouTube/Facebook Live | ⏳ Pending |
+| STORY-013 | Estado "offline" cuando no hay transmisión | ⏳ Pending |
 
-**Anti-patrones documentados:**
-- Sustituir `matrix3d()` por `rotateY()` sin verificar `transform-origin`
-- Usar `flex-direction:column` para apilar filas de un drum (deben ser `position:absolute`)
-- Ignorar bloques `@supports` (WebKit Safari gap workarounds)
-- Recalcular timings "al ojo" en lugar de medir en DevTools
+### EPIC-004: News Page
+> Página de anuncios semanales donde se publica de qué va a tratar la prédica del domingo. El contenido llega actualmente por WhatsApp cada semana.
+
+**Decisión de arquitectura (2026-06-05):**
+- El responsable inicial es Fabián, pero debe poder publicar **cualquier persona sin conocimientos técnicos** — desde el pastor hasta un voluntario
+- Interfaz simple tipo CMS: sin tocar código, sin GitHub, sin Markdown
+- **Approach recomendado: [Decap CMS](https://decapcms.org/) (antes Netlify CMS)** — open source, se integra con Astro + GitHub, genera una interfaz web en `/admin` donde cualquiera puede crear/editar posts con un formulario visual. Los posts se guardan como archivos Markdown en el repo automáticamente.
+- Alternativa si Decap CMS resulta complejo: **[Tina CMS](https://tina.io/)** — visual editing directamente sobre la página
+
+| Story | Descripción | Status |
+|---|---|---|
+| SPIKE-001 | Research: Evaluar Decap CMS vs Tina CMS para flujo de publicación no-técnico. Criterios: facilidad de setup con Astro + GitHub Pages, autenticación (quién puede publicar), interfaz para usuario no técnico, costo. | ✅ Resuelto → usar Decap CMS |
+| STORY-N01 | Setup Decap CMS en el repo (config, interfaz /admin, autenticación GitHub) | ⏳ Pending |
+| STORY-N02 | Diseño layout News listing | ⏳ Pending |
+| STORY-N03 | Diseño card de anuncio semanal con: tema de la prédica, versículo, fecha, pastor | ⏳ Pending |
+| STORY-N04 | Capacitación — guía de uso para publicar un anuncio sin conocimientos técnicos | ⏳ Pending |
+
+### EPIC-005: Social Media Integration
+> Investigar si los posts de Facebook e Instagram de RETO pueden alimentar automáticamente el blog/news de la página, eliminando trabajo duplicado de publicación.
+
+| Story | Descripción | Status |
+|---|---|---|
+| SPIKE-002 | Research: Integración Facebook/Instagram → Blog. Evaluar: **Meta Graph API** (requiere app aprobada, token de larga duración), **RSS/Atom feeds** (Facebook tiene feed público limitado), **Zapier/Make webhooks** (no-code, más simple), **embed nativo** (iframes de FB/IG, sin control de diseño). Definir: ¿queremos sincronización automática o curación manual? ¿Quién tiene acceso a la página de FB/IG de RETO? | ⏳ Pending |
+| STORY-S01 | Implementar integración elegida (pendiente resultado SPIKE-002) | ⏳ Pending |
+| STORY-S02 | Diseño de cards de post social en el blog | ⏳ Pending |
+
+### EPIC-006: Enhancements
+*(Pendiente — se puebla con feedback del beta)*
+
+### EPIC-007: QA & Testing
+| Story | Descripción | Status |
+|---|---|---|
+| STORY-014 | Playwright smoke tests (home, blog, live) | 🔄 In Progress |
+| STORY-015 | Visual regression tests | ⏳ Pending |
+| STORY-016 | Accessibility audit (axe-core) | ⏳ Pending |
 
 ---
 
-## 9. Fotos de la iglesia disponibles
+## 7. Lecciones aprendidas del proceso
+
+1. **Astro style scoping rompe clases dinámicas.** Las clases generadas por JS (drum carousel) no reciben el atributo `data-astro-cid-*` — solución: `<style is:global>` en Hero.astro.
+2. **BASE_URL en Astro no incluye slash final.** Al concatenar rutas siempre agregar `/` explícito o usar el helper `asset()`.
+3. **Race condition parallax en producción.** El JS corre antes de que el browser calcule el layout completo en builds estáticos. Solución: no usar parallax en elementos con `position: absolute` fuera del viewport inicial.
+4. **`overflow: hidden` + `preserve-3d` en Safari.** Safari aplana el 3D cuando cualquier ancestro tiene overflow hidden — bug conocido del browser.
+5. **`define:vars` en Astro elimina TypeScript.** Al usar `<script define:vars={{ base }}>` el script pierde tipado estricto — usar solo para pasar variables del servidor al cliente cuando es necesario.
+6. **GitHub Pages requiere repo público** para el plan gratuito. La página no es indexable porque tiene `noindex, nofollow`.
+7. **Playwright en CI usa `npm run preview`** no `npm run dev` — el dev server tarda demasiado en CI y causa timeout.
+
+---
+
+## 8. Pendientes / próximos pasos
+
+- [ ] **Fotos reales del carousel** — 12 fotos de la congregación (7:10, mín. 560×800px) → `public/photos/carousel/`
+- [ ] **Fix Safari drum carousel** — STORY-SAF-001
+- [ ] **Renombrar clases framer-*** — STORY-CSS-001
+- [ ] **Parallax Visit con Intersection Observer** — STORY-PAR-001
+- [ ] **EPIC-002 Blog** — arrancar en próxima sesión
+- [ ] **EPIC-003 Live Page** — después del blog
+- [ ] **SEO** — quitar noindex, agregar OG tags
+- [ ] **Google Maps** — verificar dirección correcta
+- [ ] **Analytics** — GA4
+
+---
+
+## 9. Archivos fuente originales
+Ubicación local: `/Users/fabiandelgadofragoso/Documents/RETO/PaginaRetoDavid/reto-landing-v19-deploy`
 
 | Archivo | Descripción |
 |---|---|
-| `Links/_DSC7691.jpg` | Fotografía de la iglesia |
-| `Links/DSC03343.jpg` | Fotografía de la iglesia |
-| `Links/AdobeStock_314069876.jpeg` | Stock photo (Adobe) |
-| `Links/Servicios.png` | Imagen de servicios |
-| `Links/mic-narra-RA3f0b26qwE-unsplash.psd` | Foto micrófono (Unsplash, PSD) |
-| `Links/Quienes somos.psd` / `_B.psd` | Sección "Quiénes somos" |
-| `Links/Ministerios.psd` | Foto ministerios |
-| `Links/Couple.psd` / `YoungMan.psd` / `YoungWoman.psd` | Personas de la congregación |
-| `photos/carousel/` | **Carpeta para las 12 fotos del drum** (vacía — pendiente poblar) |
-
----
-
-## 10. Pendientes / próximos pasos
-
-- [ ] **Fotos reales del drum carousel** — poblar `photos/carousel/` con 12 fotos de la congregación (7:10, mín. 560×800px). Ver `photos/carousel/README.md` para specs completas.
-- [ ] **Hosting / deploy** — `_deploy_v19/index.html` está listo. Requiere hosting + dominio para RETO.
-- [ ] **Fotos en sección ministerios** — reemplazar placeholder por fotos reales de cada ministerio.
-- [ ] **Foto sección "Te esperamos"** — imagen de comunidad propia (actualmente Unsplash).
-- [ ] **Google Maps embed** — verificar que el iframe apunte a la dirección correcta de la iglesia.
-- [ ] **SEO básico** — una vez en producción, quitar `noindex,nofollow` del `_deploy_v19/index.html`.
-- [ ] **Open Graph / Social sharing** — agregar `og:image`, `og:title`, etc.
-- [ ] **Analytics** — Google Analytics o equivalente.
-
----
-
-## 11. Stack y entorno
-
-- HTML/CSS/JS vanilla — sin frameworks ni bundlers
-- Google Fonts: Fraunces + Inter (preconnect configurado)
-- Sin dependencias npm para el frontend
-- `finovate/` — tema WordPress de referencia (Finovate/VamTam) usado como inspiración de componentes y animaciones, no como base del proyecto
-
----
-
-## 12. Lecciones aprendidas del proceso
-
-1. **Las referencias visuales son el brief de diseño.** Cuando se da una URL, el primer paso es inspeccionarla con Chrome MCP, no asumir estructura genérica.
-2. **Framer Motion no es portable como CSS.** La animación rotateY del drum es JS puro — se reemplazó por `@keyframes` CSS con timing medido en DevTools (64s → 3°/500ms medido).
-3. **El drum no es un cilindro — es una "U" abierta.** 6 rows a 30° de separación, cada uno con 2 cards, wrapper 1200px con overflow:hidden + mask-image para el fade lateral.
-4. **@supports WebKit es crítico.** Sin el bloque de fallback `gap → margin`, el spacing colapsa en Safari.
-5. **Responsive del drum: solo matrix, no widths.** Cambiar widths rompe la geometría 3D preserve-3d.
-6. **Iterar por sección en archivos separados** antes de integrar a la versión principal — ver archivos `*-opciones.html`.
+| `index.html` | Landing v19 original (base de la migración) |
+| `Logo-RETO-2026-No-slogan.png` | Logo nav |
+| `Logos Reto/Logo RETO 2026-05.png` | Logo footer |
+| `photos/carousel/` | Slots del drum (vacíos — pendiente fotos reales) |
+| `photos/pilares/` | 3 fotos de pilares |
+| `photos/ministerios/` | 5 fotos de ministerios |
+| `Reto-Comunidad-Photo.jpg` | Foto comunidad (sección Visit) |
+| `Discipulado.jpg` | Foto discipulado (ministerios) |
