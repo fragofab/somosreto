@@ -76,6 +76,7 @@
 |---|---|
 | Framework | **Astro** (static output) |
 | Lenguaje | **TypeScript** (strict) |
+| Package Manager | **pnpm v11** |
 | Testing E2E | **Playwright** (Chromium + Firefox + WebKit + Mobile) |
 | Testing Unit | **Vitest** |
 | CI/CD | **GitHub Actions** |
@@ -296,7 +297,9 @@ export function asset(path: string): string {
 | STORY-S02 | Diseño de cards de post social en el blog | ⏳ Pending |
 
 ### EPIC-006: Enhancements
-*(Pendiente — se puebla con feedback del beta)*
+| Story | Descripción | Status |
+|---|---|---|
+| STORY-E01 | Responsive para pantallas grandes (2560px+, 4K) — el contenido se ve pequeño en monitores grandes. Investigar solución con `clamp()`, breakpoints `min-width` y escalado del carousel 3D que tiene widths fijos en px. | ⏳ Pending |
 
 ### EPIC-007: QA & Testing
 | Story | Descripción | Status |
@@ -316,7 +319,7 @@ export function asset(path: string): string {
 5. **`define:vars` en Astro elimina TypeScript.** Al usar `<script define:vars={{ base }}>` el script pierde tipado estricto — usar solo para pasar variables del servidor al cliente cuando es necesario.
 6. **GitHub Pages requiere repo público** para el plan gratuito. La página no es indexable porque tiene `noindex, nofollow`.
 7. **Playwright en CI usa `npm run preview`** no `npm run dev` — el dev server tarda demasiado en CI y causa timeout.
-8. **Race condition parallax en producción.** El JS corre antes de que el browser calcule el layout completo en builds estáticos. `requestAnimationFrame` doble y `setTimeout` no son suficientes — la solución definitiva es no aplicar transforms JS a elementos fuera del viewport inicial.
+9. **Migración de npm a pnpm.** pnpm es más rápido, eficiente en disco y más estricto con dependencias. Al migrar: eliminar `node_modules` y `package-lock.json`, correr `pnpm install`, aprobar build scripts con `pnpm approve-builds` (esbuild y sharp lo requieren). En GitHub Actions usar `pnpm/action-setup@v4` y `cache: 'pnpm'`.
 
 ---
 
