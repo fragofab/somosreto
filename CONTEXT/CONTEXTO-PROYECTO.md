@@ -257,6 +257,7 @@ Cada fila contiene dos cards: `.drum-card--Na` (izquierda) y `.drum-card--Nb` (d
 | STORY-PAR-001 | Reimplementar parallax Visit con Intersection Observer | ✅ Fixed — se eliminó el parallax del photo-bg. La foto se muestra correctamente en su sección. Parallax puede reintroducirse en el futuro con IO si se desea el efecto. |
 | STORY-017 | Actualizar textos de la página — pendiente recibir textos exactos del equipo de RETO | ⏳ Pending |
 | STORY-018 | Poblar carousel con fotos reales de la congregación — pendiente recibir 12 fotos (7:10, mín. 560×800px) | ⏳ Pending |
+| STORY-020 | Fix carga lenta del carousel — fotos externas de framerusercontent.com tardan en cargar. Se resuelve al reemplazar con fotos locales en STORY-018. Considerar lazy loading o placeholder blur mientras cargan. | ⏳ Pending — bloqueado por STORY-018 |
 | STORY-019 | Fix espaciado entre pilares en sección Fundamentos — gap aumentado a 80px, hover cambiado de translateY a scale(1.05) | ✅ Done |
 
 ### EPIC-002: Blog
