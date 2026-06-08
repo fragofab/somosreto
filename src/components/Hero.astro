@@ -1,9 +1,37 @@
 ---
-// Hero.astro — Headline centrado + drum 3D carousel (Framer verbatim)
+// Hero.astro
+// Sección principal de la landing page de RETO.
+// Contiene dos partes:
+//   1. hero-content — Headline centrado con CTA
+//   2. drum-carousel — Carousel 3D tipo tambor (arquitectura DOM extraída verbatim de Framer/Frameblox)
+//
+// IMPORTANTE: El carousel usa transform-style: preserve-3d en múltiples niveles.
+// No agregar overflow:hidden a ningún ancestro del drum-carousel — aplana el 3D en Safari.
+// Ver PLAYBOOK-replica-literal-framer.md para detalles de la arquitectura.
+
+// 3D Drum Carousel 
+// Arquitectura de 5 niveles de anidamiento requeridos para el efecto 3D:
+
+// drum-carousel          → wrapper externo 1600px, fade lateral con mask-image
+//   drum-carousel__viewport  → ventana de 840px de altura
+//     drum-carousel__track   → pista horizontal flex
+//       drum-carousel__spinner   → el elemento que ROTA (animado por @keyframes drum-spin)
+//         drum-carousel__circle  → padre de las 6 filas superpuestas
+
+// Las 6 filas (drum-row--1 a drum-row--6) están superpuestas con position:absolute,
+// cada una rotada un ángulo distinto (30°, 60°, 90°, 120°, 150°, 180°) para formar
+// el efecto de tambor 3D. Cada fila contiene 2 cards (a y b) con rotateY invertido
+// para que las fotos se vean de frente.
+
+// El contenido de las filas y cards es generado dinámicamente por renderDrum() en el <script>.
+// Para cambiar fotos, editar el array CAROUSEL_PHOTOS en el <script>.
+
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <section class="hero" id="top">
+
+  <!-- ── Contenido del hero: eyebrow, headline, subtítulo y CTA ── -->
   <div class="hero-content">
     <div class="eyebrow eyebrow-dot hero-eyebrow">
       Comunidad Cristiana en Guadalajara
@@ -28,20 +56,26 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
   </div>
 
-  <!-- 3D Drum Carousel — DOM Framer verbatim -->
-  <div class="framer-wf0kvx">
-    <div class="framer-ux3tlg-container">
-      <div class="framer-n7oh7a" data-framer-name="Variant 1">
-        <div class="framer-18sfqik" data-framer-name="Slider">
-          <div class="framer-1j38ets" data-framer-name="Circle" data-drum-circle></div>
+  <!-- drum-carousel: wrapper externo del tambor 3D -->
+  <div class="drum-carousel">
+    <div class="drum-carousel__viewport">
+      <div class="drum-carousel__track">
+        <div class="drum-carousel__spinner">
+          <!-- Las 6 filas del tambor son inyectadas aquí por renderDrum() -->
+          <div class="drum-carousel__circle" data-drum-circle></div>
         </div>
       </div>
     </div>
   </div>
+
 </section>
 
 <style is:global>
-/* ── Hero shell ── */
+/* ═══════════════════════════════════════════════════════════════
+   HERO — Sección principal
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Shell del hero — posicionamiento relativo para contener el carousel absoluto */
 .hero {
   position: relative;
   width: 100%;
@@ -49,6 +83,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   overflow: hidden;
   background: var(--cream-100);
 }
+
+/* Textura de puntos sutil en el fondo */
 .hero::before {
   content: ''; position: absolute; inset: 0;
   background-image: radial-gradient(rgba(20,26,45,.03) 1px, transparent 1px);
@@ -56,12 +92,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   pointer-events: none; opacity: .6;
 }
 
-/* ── Hero copy ── */
+/* ── Contenido textual del hero ── */
 .hero-content {
   position: absolute; top: 0; left: 0; right: 0; z-index: 3;
   display: flex; flex-direction: column; align-items: center; text-align: center;
   padding: 150px 24px 36px;
 }
+
+/* Animaciones de entrada escalonadas (rise) */
 .hero-eyebrow {
   margin-bottom: 22px;
   opacity: 0; transform: translateY(14px);
@@ -91,10 +129,22 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   opacity: 0; transform: translateY(16px);
   animation: rise 1s var(--e-soft) .55s forwards;
 }
+
+/* Keyframe compartido para todas las animaciones de entrada del hero */
 @keyframes rise { to { opacity: 1; transform: translateY(0) } }
 
-/* ── Drum Carousel (verbatim Framer) ── */
-.framer-wf0kvx {
+
+/* ═══════════════════════════════════════════════════════════════
+   DRUM CAROUSEL — Sistema de carousel 3D tipo tambor
+   Extraído verbatim de Framer/Frameblox. Ver PLAYBOOK para detalles.
+   ═══════════════════════════════════════════════════════════════ */
+
+/*
+  drum-carousel — Wrapper externo de 1600px de ancho.
+  Centrado con left:50% + translateX(-800px).
+  El fade lateral se logra con mask-image (no con overflow:hidden — rompería el 3D).
+*/
+.drum-carousel {
   place-content: center flex-start; align-items: center;
   display: flex; flex: 0 0 auto; flex-flow: column;
   gap: 10px; height: min-content;
@@ -106,17 +156,28 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgb(0,0,0) 19.7213%, rgb(0,0,0) 80%, rgba(0,0,0,0) 100%);
   mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgb(0,0,0) 19.7213%, rgb(0,0,0) 80%, rgba(0,0,0,0) 100%);
 }
-.framer-ux3tlg-container {
+
+/* drum-carousel__viewport — Ventana visible de 840px de altura */
+.drum-carousel__viewport {
   flex: 0 0 auto; height: 840px; position: relative; width: 100%;
   overflow: visible;
 }
-.framer-n7oh7a {
+
+/* drum-carousel__track — Pista horizontal flex que contiene el spinner */
+.drum-carousel__track {
   place-content: center; align-items: center;
   display: flex; flex-flow: row; gap: 10px;
   height: 840px; overflow: visible;
   position: relative; width: 1600px;
 }
-.framer-18sfqik {
+
+/*
+  drum-carousel__spinner — El elemento que ROTA.
+  Animado por @keyframes drum-spin (60s por vuelta completa).
+  width: 1px es intencional — el efecto 3D no depende del ancho del spinner.
+  Al hacer hover se pausa la animación.
+*/
+.drum-carousel__spinner {
   place-content: center; align-items: center;
   display: flex; flex: 1 0 0; flex-flow: row;
   gap: 10px; height: min-content; overflow: visible; padding: 0;
@@ -125,19 +186,36 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   width: 1px; will-change: transform;
   animation: drum-spin 60s linear infinite;
 }
-.framer-1j38ets {
+
+/*
+  drum-carousel__circle — Padre de las 6 filas superpuestas.
+  También width: 1px intencional — las filas se posicionan absolutamente.
+*/
+.drum-carousel__circle {
   place-content: center; align-items: center;
   display: flex; flex: 1 0 0; flex-flow: column;
   gap: 10px; height: min-content; overflow: visible; padding: 0;
   position: relative; transform-style: preserve-3d; width: 1px;
 }
-.framer-jqyyw2 {
+
+/*
+  drum-row--1 — Primera fila del tambor (rotateY: 90°).
+  Es la única fila con position: relative (las demás son absolute superpuestas).
+  Ancho de 1400px para dar espacio a las 2 cards con separación entre ellas.
+*/
+.drum-row--1 {
   place-content: center space-between; align-items: center;
   display: flex; flex: 0 0 auto; flex-flow: row;
   height: 400px; overflow: visible; padding: 0;
   position: relative; transform-style: preserve-3d; width: 1400px;
 }
-.framer-ybx3e6, .framer-bfxn5x, .framer-80t3x0, .framer-ce9hg6, .framer-f1eujk {
+
+/*
+  drum-row--2 a drum-row--6 — Filas 2 a 6 del tambor.
+  Superpuestas sobre drum-row--1 con position: absolute.
+  Cada una tiene un rotateY distinto aplicado inline por renderDrum().
+*/
+.drum-row--2, .drum-row--3, .drum-row--4, .drum-row--5, .drum-row--6 {
   place-content: center space-between; align-items: center;
   display: flex; flex: 0 0 auto; flex-flow: row;
   height: 400px;
@@ -145,9 +223,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   position: absolute; top: calc(50% - 200px);
   transform-style: preserve-3d; width: 1400px; z-index: 1;
 }
-.framer-61s6s8, .framer-136ky85, .framer-1so9oqn, .framer-qhp8iz,
-.framer-5e9gtl, .framer-1ukzqzj, .framer-1k05s3f, .framer-1bz5k7j,
-.framer-73srre, .framer-1v2q94u, .framer-1gbvn36, .framer-1qeudci {
+
+/*
+  drum-card--[fila][a/b] — Cards individuales de foto.
+  'a' = card izquierda, 'b' = card derecha de cada fila.
+  Cada card tiene rotateY(±90deg) aplicado inline para invertir la rotación del padre
+  y hacer que las fotos se vean de frente al espectador.
+  backface-visibility: hidden oculta el reverso de las cards durante la rotación.
+*/
+.drum-card--1a, .drum-card--1b,
+.drum-card--2a, .drum-card--2b,
+.drum-card--3a, .drum-card--3b,
+.drum-card--4a, .drum-card--4b,
+.drum-card--5a, .drum-card--5b,
+.drum-card--6a, .drum-card--6b {
   backface-visibility: hidden;
   flex: 0 0 auto; height: 400px; overflow: hidden;
   position: relative; width: 280px; border-radius: 22px;
@@ -155,56 +244,80 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   will-change: transform;
   box-shadow: 0 22px 45px -20px rgba(20,26,45,.35);
 }
-.framer-61s6s8 img, .framer-136ky85 img, .framer-1so9oqn img, .framer-qhp8iz img,
-.framer-5e9gtl img, .framer-1ukzqzj img, .framer-1k05s3f img, .framer-1bz5k7j img,
-.framer-73srre img, .framer-1v2q94u img, .framer-1gbvn36 img, .framer-1qeudci img {
+
+/* Imágenes dentro de las cards — cubren el área completa */
+.drum-card--1a img, .drum-card--1b img,
+.drum-card--2a img, .drum-card--2b img,
+.drum-card--3a img, .drum-card--3b img,
+.drum-card--4a img, .drum-card--4b img,
+.drum-card--5a img, .drum-card--5b img,
+.drum-card--6a img, .drum-card--6b img {
   width: 100%; height: 100%; object-fit: cover; display: block;
   user-select: none; -webkit-user-drag: none; pointer-events: none;
 }
-.framer-61s6s8 picture, .framer-136ky85 picture, .framer-1so9oqn picture, .framer-qhp8iz picture,
-.framer-5e9gtl picture, .framer-1ukzqzj picture, .framer-1k05s3f picture, .framer-1bz5k7j picture,
-.framer-73srre picture, .framer-1v2q94u picture, .framer-1gbvn36 picture, .framer-1qeudci picture {
+
+/* Elemento picture dentro de las cards */
+.drum-card--1a picture, .drum-card--1b picture,
+.drum-card--2a picture, .drum-card--2b picture,
+.drum-card--3a picture, .drum-card--3b picture,
+.drum-card--4a picture, .drum-card--4b picture,
+.drum-card--5a picture, .drum-card--5b picture,
+.drum-card--6a picture, .drum-card--6b picture {
   width: 100%; height: 100%; display: block;
 }
 
-/* WebKit @supports verbatim — NO omitir */
+/*
+  WebKit @supports — Override para Safari/Chrome con gap → margin.
+  Framer lo incluye para compensar bugs de gap en contenedores 3D en WebKit.
+  NO OMITIR — sin esto el espaciado colapsa en Safari.
+*/
 @supports (background: -webkit-named-image(i)) and (not (font-palette:dark)) {
-  .framer-n7oh7a, .framer-18sfqik, .framer-1j38ets { gap: 0 }
-  .framer-n7oh7a > *, .framer-18sfqik > * { margin: 0 5px }
-  .framer-n7oh7a > :first-child, .framer-18sfqik > :first-child { margin-left: 0 }
-  .framer-n7oh7a > :last-child,  .framer-18sfqik > :last-child  { margin-right: 0 }
-  .framer-1j38ets > * { margin: 5px 0 }
-  .framer-1j38ets > :first-child { margin-top: 0 }
-  .framer-1j38ets > :last-child  { margin-bottom: 0 }
+  .drum-carousel__track, .drum-carousel__spinner, .drum-carousel__circle { gap: 0 }
+  .drum-carousel__track > *, .drum-carousel__spinner > * { margin: 0 5px }
+  .drum-carousel__track > :first-child, .drum-carousel__spinner > :first-child { margin-left: 0 }
+  .drum-carousel__track > :last-child,  .drum-carousel__spinner > :last-child  { margin-right: 0 }
+  .drum-carousel__circle > * { margin: 5px 0 }
+  .drum-carousel__circle > :first-child { margin-top: 0 }
+  .drum-carousel__circle > :last-child  { margin-bottom: 0 }
 }
 
+/* Animación de rotación del tambor — 60s por vuelta completa */
 @keyframes drum-spin {
   from { transform: perspective(600px) rotateY(0deg) }
   to   { transform: perspective(600px) rotateY(360deg) }
 }
-.framer-18sfqik:hover { animation-play-state: paused }
+
+/* Pausa la animación al hacer hover sobre el carousel */
+.drum-carousel__spinner:hover { animation-play-state: paused }
+
 
 /* ── Responsive ── */
+
+/* Tablet — escala el carousel al 85% */
 @media (max-width: 900px) {
   .hero { height: 925px }
-  .framer-wf0kvx {
+  .drum-carousel {
     top: 295px;
     transform-origin: center top;
     transform: translateX(-50%) scale(.85);
   }
 }
+
+/* Mobile — escala al 70% y ajusta padding del contenido */
 @media (max-width: 600px) {
   .hero { height: 850px }
   .hero-content { padding: 120px 20px 28px }
-  .framer-wf0kvx {
+  .drum-carousel {
     top: 330px;
     transform-origin: center top;
     transform: translateX(-50%) scale(.7);
   }
 }
+
+/* Mobile pequeño — escala al 60% */
 @media (max-width: 400px) {
   .hero { height: 820px }
-  .framer-wf0kvx {
+  .drum-carousel {
     top: 360px;
     transform-origin: center top;
     transform: translateX(-50%) scale(.6);
@@ -213,30 +326,66 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 </style>
 
 <script define:vars={{ base }}>
+/*
+  ═══════════════════════════════════════════════════════════════
+  CAROUSEL SCRIPT — Genera el DOM del tambor 3D dinámicamente
+  ═══════════════════════════════════════════════════════════════
+
+  Para cambiar fotos:
+  - Fotos locales: poner archivo en public/photos/carousel/<n>.webp + .jpg
+    y referenciar como { src: 'photos/carousel/01' } (sin extensión)
+    → JS arma <picture> con WebP + JPEG fallback automáticamente
+  - Fotos externas (CDN, Cloudinary, etc):
+    { src: 'https://...url.completa/foto.jpg' } → usa <img> directo
+
+  Specs de imagen recomendadas: 7:10 aspect ratio, mín. 560×800px, máx. 120KB
+*/
+
+// Array de 12 fotos para los 12 slots del tambor (2 por fila × 6 filas)
 const CAROUSEL_PHOTOS = [
+  // Fila 1 — rotateY: 90°
   { src: 'photos/carousel/01',                                                               alt: 'Comunidad RETO 01' },
   { src: 'https://framerusercontent.com/images/57FQ23G8YHiC363dq9ZuPtwr0.jpeg',             alt: 'Comunidad RETO 02' },
+  // Fila 2 — rotateY: 120°
   { src: 'https://framerusercontent.com/images/U9l9kstfWWpRl449CvhR4d0JeT0.jpeg',           alt: 'Comunidad RETO 03' },
   { src: 'https://framerusercontent.com/images/kbNFZce57OnBXCn4MAJiLPGO7XA.jpeg',           alt: 'Comunidad RETO 04' },
+  // Fila 3 — rotateY: 150°
   { src: 'https://framerusercontent.com/images/VGtYWf0GDjuYy6su9d25bNj39w.jpeg',            alt: 'Comunidad RETO 05' },
   { src: 'https://framerusercontent.com/images/2oXDTiWOk4Nv4eP6dJOIJaKnvE.jpeg',            alt: 'Comunidad RETO 06' },
+  // Fila 4 — rotateY: 180°
   { src: 'https://framerusercontent.com/images/QxNLs6KRLKF2Ez6aHcc8gZgMHFI.jpeg',           alt: 'Comunidad RETO 07' },
   { src: 'https://framerusercontent.com/images/nDrewfow2YN710qbCwekZ125Fg.jpeg',             alt: 'Comunidad RETO 08' },
+  // Fila 5 — rotateY: 60°
   { src: 'https://framerusercontent.com/images/Pce8zh8gSMxh8wVYEHEOy4SvVc.jpeg',            alt: 'Comunidad RETO 09' },
   { src: 'https://framerusercontent.com/images/sHEb4U6G3rUiHgH4ZDlRM19I5S4.jpeg',           alt: 'Comunidad RETO 10' },
+  // Fila 6 — rotateY: 30°
   { src: 'https://framerusercontent.com/images/6mmjFHOHpG2hp6goATRJeAR6M.jpeg',             alt: 'Comunidad RETO 11' },
   { src: 'https://framerusercontent.com/images/SQfk5KKyL6UHiGpazb6E0fPxH8.jpeg',            alt: 'Comunidad RETO 12' },
 ];
 
+/*
+  Configuración de las 6 filas del tambor.
+  - rowClass: clase CSS de la fila (drum-row--N)
+  - cardA: clase CSS de la card izquierda (drum-card--Na)
+  - cardB: clase CSS de la card derecha (drum-card--Nb)
+  - rotateY: ángulo de rotación en Y de la fila para posicionarla en el tambor
+*/
 const DRUM_ROWS = [
-  { name:'Image 01', rowClass:'framer-jqyyw2', cardA:'framer-61s6s8',  cardB:'framer-136ky85', rotateY: 90  },
-  { name:'Image 02', rowClass:'framer-ybx3e6', cardA:'framer-1so9oqn', cardB:'framer-qhp8iz',  rotateY: 120 },
-  { name:'Image 03', rowClass:'framer-bfxn5x', cardA:'framer-5e9gtl',  cardB:'framer-1ukzqzj', rotateY: 150 },
-  { name:'Image 04', rowClass:'framer-80t3x0', cardA:'framer-1k05s3f', cardB:'framer-1bz5k7j', rotateY: 180 },
-  { name:'Image 05', rowClass:'framer-ce9hg6', cardA:'framer-73srre',  cardB:'framer-1v2q94u', rotateY: 60  },
-  { name:'Image 06', rowClass:'framer-f1eujk', cardA:'framer-1gbvn36', cardB:'framer-1qeudci', rotateY: 30  },
+  { name:'Fila 1', rowClass:'drum-row--1', cardA:'drum-card--1a', cardB:'drum-card--1b', rotateY: 90  },
+  { name:'Fila 2', rowClass:'drum-row--2', cardA:'drum-card--2a', cardB:'drum-card--2b', rotateY: 120 },
+  { name:'Fila 3', rowClass:'drum-row--3', cardA:'drum-card--3a', cardB:'drum-card--3b', rotateY: 150 },
+  { name:'Fila 4', rowClass:'drum-row--4', cardA:'drum-card--4a', cardB:'drum-card--4b', rotateY: 180 },
+  { name:'Fila 5', rowClass:'drum-row--5', cardA:'drum-card--5a', cardB:'drum-card--5b', rotateY: 60  },
+  { name:'Fila 6', rowClass:'drum-row--6', cardA:'drum-card--6a', cardB:'drum-card--6b', rotateY: 30  },
 ];
 
+/*
+  buildImage — Construye el HTML de una imagen para una card del carousel.
+  Si la foto es externa (URL completa) usa <img> directo.
+  Si es local (ruta relativa) usa <picture> con WebP + JPEG fallback.
+  El parámetro `base` viene de Astro vía define:vars para resolver rutas correctamente
+  en dev (/) y producción (/somosreto).
+*/
 function buildImage(photo) {
   const isExternal = /^https?:\/\//.test(photo.src);
   const alt = photo.alt.replace(/"/g, '&quot;');
@@ -249,6 +398,11 @@ function buildImage(photo) {
 </picture>`;
 }
 
+/*
+  renderDrum — Genera e inyecta el HTML de las 6 filas y 12 cards en el DOM.
+  Busca el elemento [data-drum-circle] y llena su innerHTML con las filas.
+  Si hay menos de 12 fotos en CAROUSEL_PHOTOS, los slots vacíos quedan en blanco.
+*/
 function renderDrum() {
   const circle = document.querySelector('[data-drum-circle]');
   if (!circle) return;
@@ -259,19 +413,26 @@ function renderDrum() {
     const photoA = CAROUSEL_PHOTOS[i * 2]     ?? { src: '', alt: '' };
     const photoB = CAROUSEL_PHOTOS[i * 2 + 1] ?? { src: '', alt: '' };
     return `
-      <div class="${row.rowClass}" data-framer-name="${row.name}" style="transform:rotateY(${row.rotateY}deg)">
+      <div class="${row.rowClass}" data-name="${row.name}" style="transform:rotateY(${row.rotateY}deg)">
         <div class="${row.cardA}" style="transform:rotateY(90deg)">${buildImage(photoA)}</div>
         <div class="${row.cardB}" style="transform:rotateY(-90deg)">${buildImage(photoB)}</div>
       </div>`;
   }).join('');
 }
 
+// Ejecutar al cargar la página
 renderDrum();
 
-// Parallax sutil del drum
+/*
+  Parallax sutil del drum al hacer scroll.
+  Desplaza el carousel levemente hacia abajo conforme el usuario scrollea,
+  dando sensación de profundidad. Se detiene después de 1200px de scroll
+  para no afectar secciones inferiores.
+  Respeta prefers-reduced-motion.
+*/
 (function () {
   const reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const drumEl  = document.querySelector('.framer-wf0kvx');
+  const drumEl  = document.querySelector('.drum-carousel');
   if (reduce || !drumEl) return;
 
   let ticking = false;

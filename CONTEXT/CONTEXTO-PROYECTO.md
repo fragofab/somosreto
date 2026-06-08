@@ -200,20 +200,21 @@ export function asset(path: string): string {
 
 ## 5. Drum Carousel — especificaciones técnicas
 
-### Arquitectura DOM (verbatim Framer)
+### Arquitectura DOM (BEM semántico)
 ```
-.framer-wf0kvx                 → wrapper externo 1600px, mask-image fade lateral
-  .framer-ux3tlg-container     → 840px height
-    .framer-n7oh7a             → flex row, overflow visible
-      .framer-18sfqik          → JS-animated slider (@keyframes drum-spin)
-        .framer-1j38ets        → "Circle": padre de los 6 rows
-          .framer-jqyyw2       → Row 01: rotateY(90deg)
-          .framer-ybx3e6       → Row 02: rotateY(120deg)
-          .framer-bfxn5x       → Row 03: rotateY(150deg)
-          .framer-80t3x0       → Row 04: rotateY(180deg)
-          .framer-ce9hg6       → Row 05: rotateY(60deg)
-          .framer-f1eujk       → Row 06: rotateY(30deg)
+.drum-carousel              → wrapper externo 1600px, mask-image fade lateral
+  .drum-carousel__viewport  → ventana de 840px de altura
+    .drum-carousel__track   → pista horizontal flex
+      .drum-carousel__spinner   → el elemento que ROTA (@keyframes drum-spin)
+        .drum-carousel__circle  → padre de las 6 filas superpuestas
+          .drum-row--1      → Fila 1: rotateY(90deg)
+          .drum-row--2      → Fila 2: rotateY(120deg)
+          .drum-row--3      → Fila 3: rotateY(150deg)
+          .drum-row--4      → Fila 4: rotateY(180deg)
+          .drum-row--5      → Fila 5: rotateY(60deg)
+          .drum-row--6      → Fila 6: rotateY(30deg)
 ```
+Cada fila contiene dos cards: `.drum-card--Na` (izquierda) y `.drum-card--Nb` (derecha).
 
 ### Animación
 ```css
@@ -252,7 +253,7 @@ export function asset(path: string): string {
 | STORY-005 | SEO básico (meta, OG tags, quitar noindex) | ⏳ Pending |
 | STORY-006 | Analytics (Google Analytics 4) | ⏳ Pending |
 | STORY-SAF-001 | Fix drum carousel en Safari | ✅ Fixed — bug resuelto con tag `</style>` mal cerrado en Contacto.astro que generaba CSS inválido y aplanaba el 3D. |
-| STORY-CSS-001 | Renombrar clases framer-* a nombres semánticos | ⏳ Pending |
+| STORY-CSS-001 | Renombrar clases framer-* a nombres semánticos | ✅ Done |
 | STORY-PAR-001 | Reimplementar parallax Visit con Intersection Observer | ✅ Fixed — se eliminó el parallax del photo-bg. La foto se muestra correctamente en su sección. Parallax puede reintroducirse en el futuro con IO si se desea el efecto. |
 | STORY-017 | Actualizar textos de la página — pendiente recibir textos exactos del equipo de RETO | ⏳ Pending |
 | STORY-018 | Poblar carousel con fotos reales de la congregación — pendiente recibir 12 fotos (7:10, mín. 560×800px) | ⏳ Pending |
