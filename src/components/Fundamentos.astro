@@ -90,7 +90,7 @@ import { asset } from '../utils/asset';
 }
 .fundamentos-head .lede { color: var(--ink-muted); max-width: 56ch; margin: 0 auto; font-size: 1.0625rem; line-height: 1.6 }
 
-.f-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px }
+.f-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 80px }
 
 .f-card {
   position: relative; border-radius: var(--r-lg); overflow: hidden;
@@ -99,7 +99,10 @@ import { asset } from '../utils/asset';
   box-shadow: 0 22px 50px -24px rgba(20,26,45,.28);
   transition: transform .7s var(--e-out), box-shadow .7s var(--e-out);
 }
-.f-card:hover { transform: translateY(-6px); box-shadow: 0 40px 70px -28px rgba(20,26,45,.4) }
+.f-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 40px 70px -28px rgba(20,26,45,.4);
+}
 
 .f-card-bg {
   position: absolute; inset: 0; z-index: 0;

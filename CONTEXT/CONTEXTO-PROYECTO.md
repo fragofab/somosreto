@@ -251,9 +251,12 @@ export function asset(path: string): string {
 | STORY-004 | Poblar carousel con fotos reales de la congregación | ⏳ Pending |
 | STORY-005 | SEO básico (meta, OG tags, quitar noindex) | ⏳ Pending |
 | STORY-006 | Analytics (Google Analytics 4) | ⏳ Pending |
-| STORY-SAF-001 | Fix drum carousel en Safari | ⏳ Pending |
+| STORY-SAF-001 | Fix drum carousel en Safari | ✅ Fixed — bug resuelto con tag `</style>` mal cerrado en Contacto.astro que generaba CSS inválido y aplanaba el 3D. |
 | STORY-CSS-001 | Renombrar clases framer-* a nombres semánticos | ⏳ Pending |
 | STORY-PAR-001 | Reimplementar parallax Visit con Intersection Observer | ✅ Fixed — se eliminó el parallax del photo-bg. La foto se muestra correctamente en su sección. Parallax puede reintroducirse en el futuro con IO si se desea el efecto. |
+| STORY-017 | Actualizar textos de la página — pendiente recibir textos exactos del equipo de RETO | ⏳ Pending |
+| STORY-018 | Poblar carousel con fotos reales de la congregación — pendiente recibir 12 fotos (7:10, mín. 560×800px) | ⏳ Pending |
+| STORY-019 | Fix espaciado entre pilares en sección Fundamentos — gap aumentado a 80px, hover cambiado de translateY a scale(1.05) | ✅ Done |
 
 ### EPIC-002: Blog
 | Story | Descripción | Status |
