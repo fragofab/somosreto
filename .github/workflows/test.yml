@@ -22,7 +22,10 @@ jobs:
           node-version: 24
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: npx playwright install --with-deps chromium
+      - run: pnpm build
+        env:
+          NODE_ENV: production
+      - run: npx playwright install --with-deps
       - run: pnpm test:e2e
         env:
           CI: true
