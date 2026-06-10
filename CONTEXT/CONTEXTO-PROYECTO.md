@@ -1,5 +1,5 @@
 # RETO — Contexto completo del proyecto web
-> Última actualización: 2026-06-05
+> Última actualización: 2026-06-09
 
 ---
 
@@ -85,10 +85,10 @@
 | Node.js | v24 |
 
 ### Repositorio
-- URL: `https://github.com/fragofab/reto-website`
+- URL: `https://github.com/fragofab/somosreto`
 - Branch principal: `main`
 - Deploy automático: push a `main` → GitHub Actions → GitHub Pages
-- URL pre-prod (beta): `https://fragofab.github.io/reto-website`
+- URL pre-prod (beta): `https://fragofab.github.io/somosreto`
 - URL producción final: `https://somosreto.com` (pendiente compra de dominio/host)
 
 ### Estrategia de hosting — decisión pendiente
@@ -116,7 +116,7 @@ El único cambio necesario en `astro.config.mjs`:
 ```javascript
 export default defineConfig({
   site: 'https://somosreto.com',
-  base: '/',  //← quitar el /reto-website
+  base: '/',  //← quitar el /somosreto
   output: 'static',
 });
 ```
@@ -124,7 +124,7 @@ Y eliminar la lógica `isProd` — con dominio propio siempre es `/` como base.
 
 ### Estructura del proyecto
 ```
-reto-website/
+somosreto/
 ├── .github/
 │   └── workflows/
 │       ├── deploy.yml          # GitHub Actions → GitHub Pages
@@ -180,7 +180,7 @@ const isProd = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
   site: 'https://fragofab.github.io',
-  base: isProd ? '/reto-website' : '/',
+  base: isProd ? '/somosreto' : '/',
   output: 'static',
 });
 ```
@@ -331,14 +331,12 @@ Cada fila contiene dos cards: `.drum-card--Na` (izquierda) y `.drum-card--Nb` (d
 ## 8. Pendientes / próximos pasos
 
 - [ ] **Fotos reales del carousel** — 12 fotos de la congregación (7:10, mín. 560×800px) → `public/photos/carousel/`
-- [ ] **Fix Safari drum carousel** — STORY-SAF-001
-- [ ] **Renombrar clases framer-*** — STORY-CSS-001
-- [ ] **Parallax Visit con Intersection Observer** — STORY-PAR-001
 - [ ] **EPIC-002 Blog** — arrancar en próxima sesión
 - [ ] **EPIC-003 Live Page** — después del blog
-- [ ] **SEO** — quitar noindex, agregar OG tags
+- [ ] **SEO** — quitar noindex, agregar OG tags (STORY-005)
 - [ ] **Google Maps** — verificar dirección correcta
-- [ ] **Analytics** — GA4
+- [ ] **Analytics** — GA4 (STORY-006)
+- [ ] **Migración a dominio propio** — `somosreto.com` + Cloudflare Pages (~2026-06-14)
 
 ---
 
