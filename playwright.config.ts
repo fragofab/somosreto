@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://127.0.0.1:4321',
+    baseURL: 'http://localhost:4321',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -19,8 +19,8 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['iPhone 13'] } },
   ],
   webServer: {
-    command: 'pnpm preview -- --port 4321 --host 127.0.0.1',
-    url: 'http://127.0.0.1:4321',
+    command: 'pnpm dev',
+    url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },
