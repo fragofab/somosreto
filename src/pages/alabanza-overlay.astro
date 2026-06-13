@@ -1,0 +1,36 @@
+---
+/**
+ * alabanza-overlay.astro
+ * Página standalone para OBS — sin nav ni footer.
+ * Dimensiones fijas: 1920×1080px
+ *
+ * Parámetro de query ?mode=countdown|main|farewell (default: countdown)
+ * Ejemplo OBS: https://somosreto.com/alabanza-overlay?mode=main
+ */
+import AlabanzaOverlay from '../components/live/alabanza/AlabanzaOverlay.astro';
+
+const mode = (Astro.url.searchParams.get('mode') ?? 'countdown') as
+  'countdown' | 'main' | 'farewell';
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Momento de Alabanza — RETO</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #000;
+      position: relative;
+      font-family: Georgia, serif;
+    }
+  </style>
+</head>
+<body>
+  <AlabanzaOverlay mode={mode} totalSeconds={60} />
+</body>
+</html>

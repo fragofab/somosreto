@@ -1,0 +1,188 @@
+---
+/**
+ * MainCard.astro
+ * Card principal visible durante el momento de alabanza.
+ * - Oculto por defecto (opacity 0) — AlabanzaOverlay lo activa
+ * - Muestra nombre de canción actual via evento 'song-change'
+ * - Visualizador de barras animado mientras hay audio
+ * - Al activarse muestra también CameraFrame
+ */
+---
+
+<div id="card">
+  <div id="headline">Estamos en un momento de alabanza</div>
+  <div id="sub">
+    El audio está pausado temporalmente<br />
+    para no violar derechos de autor
+  </div>
+  <div id="thanks">
+    ¡Gracias por tu comprensión,<br />En un momento comenzamos!
+  </div>
+  <div id="song-info">
+    <span id="song-title"></span>
+  </div>
+  <div id="viz"></div>
+</div>
+
+<style>
+  #card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 10;
+    text-align: center;
+    padding: 50px 100px 46px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 30px;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    width: 1160px;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease;
+  }
+
+  #card.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #logo-card {
+    display: block;
+    width: 240px;
+    margin: 0 auto 24px;
+    opacity: 0.92;
+    filter: drop-shadow(0 2px 18px rgba(0, 0, 0, 0.5));
+    border-radius: 12px;
+  }
+
+  #headline {
+    font-size: 68px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 22px;
+    animation: shimmer 5s ease-in-out infinite alternate;
+  }
+
+  #sub {
+    font-size: 34px;
+    color: rgba(255, 255, 255, 0.85);
+    font-style: italic;
+    line-height: 1.45;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    margin-bottom: 14px;
+  }
+
+  #thanks {
+    font-size: 28px;
+    color: rgba(255, 210, 170, 0.97);
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-shadow: 0 0 22px rgba(230, 160, 100, 0.6);
+  }
+
+  #song-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  #song-title {
+    font-size: 22px;
+    color: rgba(255, 215, 175, 0.95);
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 800px;
+  }
+
+  #viz {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 7px;
+    height: 40px;
+    margin-top: 18px;
+  }
+
+  @keyframes shimmer {
+    from { text-shadow: 0 0 30px rgba(255, 200, 150, 0.4), 0 2px 10px rgba(0, 0, 0, 0.7); }
+    to   { text-shadow: 0 0 70px rgba(255, 200, 150, 0.9), 0 2px 10px rgba(0, 0, 0, 0.7); }
+  }
+</style>
+
+<style is:global>
+  /* Las barras del visualizador se generan por JS — necesitan is:global */
+  .vbar {
+    width: 9px;
+    border-radius: 5px;
+    background: rgba(224, 155, 110, 0.6);
+    transition: height 0.15s ease;
+  }
+</style>
+
+<script>
+  const card      = document.getElementById('card') as HTMLElement;
+  const songTitle = document.getElementById('song-title') as HTMLElement;
+  const viz       = document.getElementById('viz') as HTMLElement;
+  const camera    = document.getElementById('camera-frame') as HTMLElement;
+
+  // ── Visualizador de barras ─────────────────────────────────
+  const bars: HTMLElement[] = [];
+  for (let i = 0; i < 26; i++) {
+    const bar = document.createElement('div');
+    bar.className   = 'vbar';
+    bar.style.height = '8px';
+    viz.appendChild(bar);
+    bars.push(bar);
+  }
+
+  function animateViz(): void {
+    const playing = (window as any).AudioPlayer?.isPlaying() ?? false;
+    bars.forEach(b => {
+      b.style.height = (playing ? Math.random() * 36 + 6 : 6) + 'px';
+    });
+    setTimeout(animateViz, 120);
+  }
+  animateViz();
+
+  // ── Nombre de canción ──────────────────────────────────────
+  window.addEventListener('song-change', (e: Event) => {
+    const detail = (e as CustomEvent<{ name: string }>).detail;
+    songTitle.textContent = '♩ ' + detail.name;
+  });
+
+  // Inicializar con la canción actual si ya está cargada
+  const initialName = (window as any).AudioPlayer?.currentSongName?.();
+  if (initialName) songTitle.textContent = '♩ ' + initialName;
+
+  // Escuchar fin del countdown para activarse automáticamente
+  window.addEventListener('countdown-done', () => {
+    (window as any).showMainCard();
+  });
+
+  // ── API para que AlabanzaOverlay active este card ──────────
+  (window as any).showMainCard = () => {
+    // Ocultar countdown si estuviera visible
+    const countdown = document.getElementById('countdown-screen') as HTMLElement | null;
+    if (countdown) {
+      countdown.classList.add('hidden');
+      setTimeout(() => { countdown.style.display = 'none'; }, 1500);
+    }
+    card.classList.add('visible');
+    if (camera) camera.style.display = 'flex';
+    (window as any).AudioPlayer?.play();
+  };
+
+  (window as any).hideMainCard = () => {
+    card.classList.remove('visible');
+    if (camera) camera.style.display = 'none';
+  };
+</script>

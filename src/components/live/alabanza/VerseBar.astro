@@ -1,0 +1,55 @@
+---
+/**
+ * VerseBar.astro
+ * Barra inferior con versículos en scroll continuo.
+ * - Fija en la parte inferior, siempre visible
+ * - 13 versículos en loop cada 180s
+ */
+---
+
+<div id="verse-bar">
+  <span id="verse-text">
+    "Todo esto proviene de Dios, quien por medio de Cristo nos reconcilió consigo mismo y nos dio el ministerio de la reconciliación." — 2 Cor. 5:18 NVI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "No se amolden al mundo actual, sino sean transformados mediante la renovación de su mente. Así podrán comprobar cuál es la voluntad de Dios, buena, agradable y perfecta." — Rom. 12:2 NVI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Vayan y hagan discípulos de todas las naciones, bautizándolos en el nombre del Padre y del Hijo y del Espíritu Santo." — Mat. 28:19 NVI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Nadie puede servir a dos señores, pues menospreciará a uno y amará al otro, o querrá mucho a uno y despreciará al otro. No se puede servir a la vez a Dios y a las riquezas." — Mat. 6:24 NVI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Instruye al niño en el camino correcto, y aun en su vejez no lo abandonará." — Prov. 22:6 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Les suplico, hermanos, en el nombre de nuestro Señor Jesucristo, que todos vivan en armonía y que no haya divisiones entre ustedes, sino que se mantengan unidos en un mismo pensar y en un mismo propósito." — 1 Cor. 1:10 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Porque para Dios no hay nada imposible." — Luc. 1:37 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Entrégale tus afanes al Señor y él te sostendrá; no permitirá que el justo caiga y quede abatido para siempre." — Sal. 55:22 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Cantad a Jehová cántico nuevo; cantad a Jehová, toda la tierra." — Sal. 96:1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Alabad a Dios en su santuario; alabadle en la magnificencia de su firmamento." — Sal. 150:1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Regocijaos en el Señor siempre. Otra vez digo: ¡Regocijaos!" — Fil. 4:4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "El que habita en el abrigo del Altísimo morará bajo la sombra del Omnipotente." — Sal. 91:1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Bendice, alma mía, a Jehová, y bendiga todo mi ser su santo nombre." — Sal. 103:1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span>
+</div>
+
+<style>
+  #verse-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.55);
+    height: 58px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  #verse-text {
+    white-space: nowrap;
+    font-size: 25px;
+    font-family: Georgia, serif;
+    color: rgba(255, 220, 185, 0.95);
+    font-style: italic;
+    animation: scrollVerse 180s linear infinite;
+  }
+
+  @keyframes scrollVerse {
+    from { transform: translateX(1920px); }
+    to   { transform: translateX(-100%); }
+  }
+</style>

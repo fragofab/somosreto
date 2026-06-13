@@ -1,0 +1,126 @@
+---
+/**
+ * FarewellCard.astro
+ * Card de despedida al final del servicio.
+ * - Mensaje aleatorio de 8 opciones
+ * - Cruz con glow animado
+ * - Fade a negro a los 15s y detiene el bgInterval del Background
+ * - Limpia timers al activarse
+ */
+---
+
+<div id="farewell-card">
+  <div id="farewell-text"></div>
+  <span id="farewell-cross">✝</span>
+</div>
+
+<style>
+  #farewell-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 10;
+    text-align: center;
+    padding: 70px 100px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 30px;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    width: 1000px;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  #farewell-card.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #farewell-text {
+    font-size: 38px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1.5;
+    text-shadow: 0 0 50px rgba(255, 220, 180, 0.45), 0 2px 10px rgba(0, 0, 0, 0.7);
+    animation: shimmer 5s ease-in-out infinite alternate;
+  }
+
+  #farewell-cross {
+    font-size: 44px;
+    color: rgba(224, 155, 110, 0.6);
+    animation: crossGlow 3.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes crossGlow {
+    from { filter: drop-shadow(0 0 14px rgba(255, 220, 100, 0.6)); }
+    to   { filter: drop-shadow(0 0 38px rgba(255, 220, 100, 1)); }
+  }
+
+  @keyframes shimmer {
+    from { text-shadow: 0 0 30px rgba(255, 200, 150, 0.4), 0 2px 10px rgba(0, 0, 0, 0.7); }
+    to   { text-shadow: 0 0 70px rgba(255, 200, 150, 0.9), 0 2px 10px rgba(0, 0, 0, 0.7); }
+  }
+</style>
+
+<script>
+  const card = document.getElementById('farewell-card') as HTMLElement;
+
+  const messages: string[] = [
+    'Gracias por acompañarnos en este servicio dominical. ¡Nos vemos el próximo domingo! 🙏',
+    'Gracias por ser parte de RETO hoy. Este video quedará disponible para que puedas verlo cuando quieras. ¡Bendiciones y hasta el próximo domingo!',
+    'Gracias por conectarte con nosotros. Si esta transmisión te bendijo, compártela. ¡Nos vemos el próximo domingo en RETO!',
+    'Fue un privilegio compartir este tiempo contigo. Que todo lo que escuchaste hoy transforme tu semana. ¡Hasta el próximo domingo!',
+    'Gracias por ser parte de nuestra comunidad. Recuerda que RETO es tu familia. ¡Te esperamos el próximo domingo!',
+    'Que la Palabra de hoy sea lámpara a tus pies y lumbrera a tu camino. Gracias por conectarte. ¡Hasta pronto!',
+    'Servicio terminado. Que Dios guarde tu salida y tu entrada desde ahora y para siempre. ¡Bendiciones!',
+    'Gracias por vernos en línea. Si puedes, te invitamos a vivir la experiencia en persona. ¡Te esperamos cada domingo en RETO!',
+  ];
+
+  let fadeTimer: ReturnType<typeof setTimeout> | null = null;
+
+  (window as any).showFarewell = () => {
+    // Ocultar MainCard y CameraFrame si estaban visibles
+    const mainCard = document.getElementById('card') as HTMLElement | null;
+    const camera   = document.getElementById('camera-frame') as HTMLElement | null;
+    if (mainCard) mainCard.classList.remove('visible');
+    if (camera)   camera.style.display = 'none';
+
+    // Detener audio
+    (window as any).AudioPlayer?.togglePlay?.();
+
+    // Mostrar mensaje aleatorio
+    const msg = messages[Math.floor(Math.random() * messages.length)];
+    (document.getElementById('farewell-text') as HTMLElement).textContent = msg;
+    card.classList.add('visible');
+
+    // Fade a negro a los 15s y limpiar bgInterval
+    fadeTimer = setTimeout(() => {
+      const bgInterval = (window as any).bgInterval;
+      if (bgInterval) clearInterval(bgInterval);
+
+      const els = ['bg-a', 'bg-b', 'orbs-a', 'orbs-b', 'particles', 'logo-corner', 'verse-bar'];
+      els.forEach(id => {
+        const el = document.getElementById(id) as HTMLElement | null;
+        if (el) { el.style.transition = 'opacity 3s ease-in-out'; el.style.opacity = '0'; }
+      });
+
+      card.style.transition = 'opacity 3s ease-in-out';
+      card.style.opacity = '0';
+      document.body.style.transition = 'background 3s ease-in-out';
+      document.body.style.background = '#000';
+    }, 15000);
+  };
+
+  // Limpieza si el componente se desmonta (hot reload en dev)
+  document.addEventListener('astro:before-swap', () => {
+    if (fadeTimer) clearTimeout(fadeTimer);
+  });
+</script>

@@ -1,0 +1,118 @@
+---
+/**
+ * CameraFrame.astro
+ * Recuadro decorativo esquina superior derecha para la cámara.
+ * - 380×214px (16:9)
+ * - Esquinas doradas con pseudo-elementos y divs adicionales
+ * - Badge "EN VIVO" con punto pulsante
+ * - Oculto por defecto — visible solo durante MainCard
+ */
+---
+
+<div id="camera-frame">
+  <div class="cam-corner-tr"></div>
+  <div class="cam-corner-bl"></div>
+  <div id="live-badge">
+    <div id="live-dot"></div>
+    <span id="live-text">EN VIVO</span>
+  </div>
+</div>
+
+<style>
+  #camera-frame {
+    position: absolute;
+    top: 32px;
+    right: 48px;
+    z-index: 25;
+    width: 380px;
+    height: 214px;
+    border-radius: 20px;
+    background: transparent;
+    border: 1.5px solid rgba(224, 155, 110, 0.45);
+    box-shadow: 0 0 0 1px rgba(224, 155, 110, 0.2);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Esquinas decorativas — top-left y bottom-right vía pseudo-elementos */
+  #camera-frame::before,
+  #camera-frame::after {
+    content: '';
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-color: rgba(224, 155, 110, 0.7);
+    border-style: solid;
+    border-radius: 4px;
+  }
+  #camera-frame::before {
+    top: 10px;
+    left: 10px;
+    border-width: 2px 0 0 2px;
+  }
+  #camera-frame::after {
+    bottom: 10px;
+    right: 10px;
+    border-width: 0 2px 2px 0;
+  }
+
+  /* Esquinas decorativas — top-right y bottom-left vía divs */
+  .cam-corner-tr {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-top: 2px solid rgba(224, 155, 110, 0.7);
+    border-right: 2px solid rgba(224, 155, 110, 0.7);
+    border-radius: 4px;
+  }
+  .cam-corner-bl {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 28px;
+    height: 28px;
+    border-bottom: 2px solid rgba(224, 155, 110, 0.7);
+    border-left: 2px solid rgba(224, 155, 110, 0.7);
+    border-radius: 4px;
+  }
+
+  /* Badge EN VIVO — cuelga justo debajo del recuadro */
+  #live-badge {
+    position: absolute;
+    top: 226px;
+    left: 50%;
+    translate: -50% 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 4px 12px;
+  }
+
+  #live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e05050;
+    animation: livePulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(224, 80, 80, 0.6); }
+    50%       { opacity: 0.7; box-shadow: 0 0 0 5px rgba(224, 80, 80, 0); }
+  }
+
+  #live-text {
+    font-size: 13px;
+    font-family: Georgia, serif;
+    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 1px;
+  }
+</style>

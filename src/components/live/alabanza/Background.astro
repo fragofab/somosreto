@@ -1,0 +1,220 @@
+---
+/**
+ * Background.astro
+ * Fondo animado del overlay de alabanza.
+ * - Dos capas bg-a / bg-b que hacen crossfade entre 6 gradientes cada 12s
+ * - Dos juegos de orbs desenfocados que crossfadean junto con el fondo
+ * - Canvas de partículas flotantes
+ *
+ * No recibe props — es puramente visual y se monta siempre.
+ */
+---
+
+<!-- ── DOS CAPAS DE FONDO ──────────────────────────────── -->
+<div class="bg-layer" id="bg-a"></div>
+<div class="bg-layer" id="bg-b"></div>
+
+<!-- ── ORBS ──────────────────────────────────────────────── -->
+<div class="orbs" id="orbs-a">
+  <div class="orb" id="orb-a1"></div>
+  <div class="orb" id="orb-a2"></div>
+  <div class="orb" id="orb-a3"></div>
+</div>
+<div class="orbs" id="orbs-b">
+  <div class="orb" id="orb-b1"></div>
+  <div class="orb" id="orb-b2"></div>
+  <div class="orb" id="orb-b3"></div>
+</div>
+
+<!-- ── PARTÍCULAS ────────────────────────────────────────── -->
+<canvas id="particles"></canvas>
+
+<style is:global>
+  .bg-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transition: opacity 1.5s ease-in-out;
+  }
+  #bg-a { opacity: 1; }
+  #bg-b { opacity: 0; }
+
+  .orbs {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transition: opacity 1.5s ease-in-out;
+    pointer-events: none;
+  }
+  #orbs-a { opacity: 1; }
+  #orbs-b { opacity: 0; }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.4;
+    animation: orbPulse ease-in-out infinite alternate;
+  }
+
+  /* Tamaños y posiciones de los orbs */
+  #orb-a1, #orb-b1 {
+    width: 540px; height: 540px;
+    top: -130px; left: -110px;
+    animation-duration: 7s;
+  }
+  #orb-a2, #orb-b2 {
+    width: 440px; height: 440px;
+    bottom: -110px; right: -90px;
+    animation-duration: 9s;
+    animation-delay: 2s;
+  }
+  #orb-a3, #orb-b3 {
+    width: 340px; height: 340px;
+    top: 45%; left: 48%;
+    translate: -50% -50%;
+    animation-duration: 12s;
+    animation-delay: 4s;
+  }
+
+  @keyframes orbPulse {
+    from { scale: 1;    opacity: 0.3; }
+    to   { scale: 1.2;  opacity: 0.5; }
+  }
+
+  #particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  // ── FONDOS — 6 esquemas de color ──────────────────────────
+  interface BgScheme {
+    bg: string;
+    o1: string;
+    o2: string;
+    o3: string;
+  }
+
+  const bgs: BgScheme[] = [
+    { bg: 'radial-gradient(ellipse at 35% 40%, #1b2e4a 0%, #0d1b30 65%, #050d1a 100%)', o1:'#2a4a72', o2:'#1e3a5f', o3:'#162d4a' },
+    { bg: 'radial-gradient(ellipse at 60% 35%, #3a1f10 0%, #1e0f06 65%, #0d0603 100%)', o1:'#6b3520', o2:'#8a4a28', o3:'#4a2412' },
+    { bg: 'radial-gradient(ellipse at 40% 60%, #0f2a1e 0%, #071a10 65%, #030d08 100%)', o1:'#1a4a2e', o2:'#0f3020', o3:'#1e5c38' },
+    { bg: 'radial-gradient(ellipse at 55% 35%, #1e0f35 0%, #110820 65%, #080410 100%)', o1:'#3a1a60', o2:'#2a1048', o3:'#4a2278' },
+    { bg: 'radial-gradient(ellipse at 30% 50%, #1a1f2e 0%, #0e1218 65%, #060810 100%)', o1:'#2a3550', o2:'#1e2840', o3:'#354468' },
+    { bg: 'radial-gradient(ellipse at 65% 45%, #072028 0%, #041218 65%, #020a0e 100%)', o1:'#0e3a46', o2:'#0a2830', o3:'#124e5e' },
+  ];
+
+  let bgIdx = 0;
+  let activeLayer: 'a' | 'b' = 'a';
+
+  function applyBgToLayer(layer: 'a' | 'b', idx: number): void {
+    const scheme = bgs[idx];
+    const bgEl = document.getElementById('bg-' + layer) as HTMLElement;
+    const o1   = document.getElementById('orb-' + layer + '1') as HTMLElement;
+    const o2   = document.getElementById('orb-' + layer + '2') as HTMLElement;
+    const o3   = document.getElementById('orb-' + layer + '3') as HTMLElement;
+    bgEl.style.background = scheme.bg;
+    o1.style.background   = scheme.o1;
+    o2.style.background   = scheme.o2;
+    o3.style.background   = scheme.o3;
+  }
+
+  function crossfadeToNext(): void {
+    const incoming: 'a' | 'b' = activeLayer === 'a' ? 'b' : 'a';
+    const outgoing             = activeLayer;
+
+    applyBgToLayer(incoming, bgIdx);
+
+    (document.getElementById('bg-'   + incoming) as HTMLElement).style.opacity = '1';
+    (document.getElementById('orbs-' + incoming) as HTMLElement).style.opacity = '1';
+    (document.getElementById('bg-'   + outgoing) as HTMLElement).style.opacity = '0';
+    (document.getElementById('orbs-' + outgoing) as HTMLElement).style.opacity = '0';
+
+    activeLayer = incoming;
+  }
+
+  // Inicializar capas
+  applyBgToLayer('a', 0);
+  applyBgToLayer('b', 1);
+
+  // Exportar el interval para que FarewellCard pueda detenerlo
+  const bgInterval = setInterval(() => {
+    bgIdx = (bgIdx + 1) % bgs.length;
+    crossfadeToNext();
+    // Pre-cargar siguiente esquema en la capa oculta
+    setTimeout(() => {
+      const hidden: 'a' | 'b' = activeLayer === 'a' ? 'b' : 'a';
+      const preload = (bgIdx + 1) % bgs.length;
+      applyBgToLayer(hidden, preload);
+    }, 2000);
+  }, 12000);
+
+  // Exponemos el interval en window para que FarewellCard lo detenga
+  (window as Window & { bgInterval?: ReturnType<typeof setInterval> }).bgInterval = bgInterval;
+
+  // ── PARTÍCULAS ─────────────────────────────────────────────
+  const canvas  = document.getElementById('particles') as HTMLCanvasElement;
+  const ctx     = canvas.getContext('2d')!;
+  canvas.width  = 1920;
+  canvas.height = 1080;
+
+  const palette: [number, number, number][] = [
+    [232, 168, 130],
+    [212, 137, 106],
+    [168, 196, 162],
+    [123, 184, 160],
+    [255, 235, 210],
+  ];
+
+  interface Particle {
+    x: number;
+    y: number;
+    r: number;
+    speed: number;
+    life: number;
+    maxLife: number;
+    maxOp: number;
+    opacity: number;
+    color: [number, number, number];
+  }
+
+  const particles: Particle[] = Array.from({ length: 85 }, () => {
+    const color = palette[Math.floor(Math.random() * palette.length)];
+    return {
+      x:       Math.random() * 1920,
+      y:       Math.random() * 1080 + 200,
+      r:       Math.random() * 2.5 + 0.7,
+      speed:   Math.random() * 0.5 + 0.15,
+      life:    Math.floor(Math.random() * 500),
+      maxLife: Math.floor(Math.random() * 500 + 350),
+      maxOp:   Math.random() * 0.6 + 0.2,
+      opacity: 0,
+      color,
+    };
+  });
+
+  (function drawParticles(): void {
+    ctx.clearRect(0, 0, 1920, 1080);
+    particles.forEach(p => {
+      p.life++;
+      p.y -= p.speed;
+      const prog = (p.life % p.maxLife) / p.maxLife;
+      p.opacity  = prog < 0.15
+        ? (prog / 0.15) * p.maxOp
+        : prog > 0.85
+          ? ((1 - prog) / 0.15) * p.maxOp
+          : p.maxOp;
+      if (p.life % p.maxLife === 0) { p.x = Math.random() * 1920; p.y = 1100; }
+      const [r, g, b] = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${p.opacity})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawParticles);
+  })();
+</script>

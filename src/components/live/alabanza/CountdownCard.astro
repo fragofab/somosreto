@@ -1,0 +1,205 @@
+---
+/**
+ * CountdownCard.astro
+ * Pantalla de cuenta regresiva antes del servicio.
+ * - Anillo SVG de progreso que se vacía conforme avanza el tiempo
+ * - Número central pulsante
+ * - Al llegar a 0 emite evento 'countdown-done' para que AlabanzaOverlay
+ *   transite al MainCard
+ *
+ * Props:
+ *   totalSeconds — duración de la cuenta (default 60)
+ */
+interface Props {
+  totalSeconds?: number;
+}
+const { totalSeconds = 60 } = Astro.props;
+---
+
+<div id="countdown-screen">
+  <div id="countdown-card">
+    <div id="countdown-title">
+      En un momento comenzará el servicio dominical de RETO Comunidad Cristiana
+    </div>
+    <div id="countdown-sub">Prepara tu corazón, iniciamos en</div>
+
+    <div id="progress-ring">
+      <svg width="300" height="300" viewBox="0 0 300 300">
+        <circle id="progress-bg"  cx="150" cy="150" r="130" />
+        <circle id="progress-arc" cx="150" cy="150" r="130" />
+      </svg>
+      <div id="countdown-number">{totalSeconds}</div>
+    </div>
+
+    <div id="countdown-label">segundos</div>
+  </div>
+</div>
+
+<!-- Pasar totalSeconds al script sin define:vars para mantener TS -->
+<meta id="countdown-config" data-total={totalSeconds} />
+
+<style>
+  #countdown-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: none;              /* oculto hasta que startCountdown() lo active */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 1.5s ease;
+  }
+
+  #countdown-screen.active {
+    display: flex;
+  }
+
+  #countdown-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #countdown-card {
+    text-align: center;
+    padding: 70px 120px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 30px;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    max-width: 1100px;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 2s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; translate: 0 40px; }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  #countdown-title {
+    font-size: 62px;
+    font-weight: bold;
+    font-family: Georgia, serif;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    text-shadow: 0 0 50px rgba(255, 220, 180, 0.45), 0 2px 10px rgba(0, 0, 0, 0.7);
+    animation: shimmer 5s ease-in-out infinite alternate;
+  }
+
+  #countdown-sub {
+    font-size: 34px;
+    font-family: Georgia, serif;
+    color: rgba(255, 255, 255, 0.82);
+    font-style: italic;
+    margin-bottom: 52px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  }
+
+  #progress-ring {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #progress-ring svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    rotate: -90deg;
+  }
+
+  #progress-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 6;
+  }
+
+  #progress-arc {
+    fill: none;
+    stroke: rgba(224, 155, 110, 0.85);
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+  }
+
+  #countdown-number {
+    font-size: 160px;
+    font-weight: bold;
+    font-family: Georgia, serif;
+    color: #fff;
+    line-height: 1;
+    text-shadow:
+      0 0 60px rgba(224, 155, 110, 0.8),
+      0 0 120px rgba(224, 155, 110, 0.4),
+      0 2px 10px rgba(0, 0, 0, 0.8);
+    animation: countPulse 1s ease-in-out infinite alternate;
+    min-width: 280px;
+    display: inline-block;
+  }
+
+  @keyframes countPulse {
+    from { scale: 1;    opacity: 1; }
+    to   { scale: 1.04; opacity: 0.9; }
+  }
+
+  #countdown-label {
+    font-size: 28px;
+    font-family: Georgia, serif;
+    color: rgba(255, 210, 170, 0.9);
+    font-style: italic;
+    margin-top: 20px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 16px rgba(224, 155, 110, 0.5);
+  }
+
+  @keyframes shimmer {
+    from { text-shadow: 0 0 30px rgba(255, 200, 150, 0.4), 0 2px 10px rgba(0, 0, 0, 0.7); }
+    to   { text-shadow: 0 0 70px rgba(255, 200, 150, 0.9), 0 2px 10px rgba(0, 0, 0, 0.7); }
+  }
+</style>
+
+<script>
+  const config     = document.getElementById('countdown-config') as HTMLMetaElement;
+  const TOTAL      = parseInt(config.dataset.total ?? '60', 10);
+  const circumference = 2 * Math.PI * 130;
+
+  const screen     = document.getElementById('countdown-screen') as HTMLElement;
+  const numberEl   = document.getElementById('countdown-number') as HTMLElement;
+  const arc        = document.getElementById('progress-arc') as SVGCircleElement;
+  const label      = document.getElementById('countdown-label') as HTMLElement;
+
+  arc.style.strokeDasharray  = String(circumference);
+  arc.style.strokeDashoffset = '0';
+
+  let secondsLeft = TOTAL;
+
+  function tick(): void {
+    numberEl.textContent       = String(secondsLeft);
+    arc.style.strokeDashoffset = String(circumference * (1 - secondsLeft / TOTAL));
+
+    if (secondsLeft <= 0) {
+      screen.classList.add('hidden');
+      setTimeout(() => {
+        screen.style.display = 'none';
+        window.dispatchEvent(new CustomEvent('countdown-done'));
+      }, 1500);
+      return;
+    }
+
+    secondsLeft--;
+    setTimeout(tick, 1000);
+  }
+
+  // El orquestador (AlabanzaOverlay) llama window.startCountdown() para iniciarlo
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).startCountdown = () => {
+    screen.classList.add('active');
+    setTimeout(tick, 500);
+  };
+</script>

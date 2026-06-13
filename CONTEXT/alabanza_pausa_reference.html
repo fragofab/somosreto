@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Momento de Alabanza — Reto</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: 'Georgia', serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+  }
+
+  /* ── DOS CAPAS DE FONDO para crossfade real ─────────────── */
+  .bg-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transition: opacity 1.5s ease-in-out;
+  }
+  #bg-a { opacity: 1; }
+  #bg-b { opacity: 0; }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.4;
+    animation: orbPulse ease-in-out infinite alternate;
+  }
+
+  @keyframes orbPulse {
+    from { transform: scale(1) translate(0, 0); opacity: 0.3; }
+    to   { transform: scale(1.2) translate(20px, -20px); opacity: 0.5; }
+  }
+
+  /* Dos juegos de orbs, uno por capa */
+  #orbs-a, #orbs-b {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transition: opacity 1.5s ease-in-out;
+    pointer-events: none;
+  }
+  #orbs-a { opacity: 1; }
+  #orbs-b { opacity: 0; }
+
+  canvas#particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* ── PANTALLA CUENTA REGRESIVA ─────────────────────────── */
+  #countdown-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 1.5s ease;
+  }
+
+  #countdown-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #countdown-card {
+    text-align: center;
+    padding: 70px 120px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 30px;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    max-width: 1100px;
+    box-shadow: 0 0 100px rgba(0,0,0,0.5);
+    animation: fadeInUp 2s ease forwards;
+  }
+
+  #countdown-logo {
+    display: block;
+    width: 220px;
+    margin: 0 auto 36px;
+    opacity: 0.92;
+    filter: drop-shadow(0 2px 18px rgba(0,0,0,0.5));
+  }
+
+  #countdown-title {
+    font-size: 62px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    text-shadow: 0 0 50px rgba(255,220,180,0.45), 0 2px 10px rgba(0,0,0,0.7);
+    animation: shimmer 5s ease-in-out infinite alternate;
+  }
+
+  #countdown-sub {
+    font-size: 34px;
+    color: rgba(255,255,255,0.82);
+    font-style: italic;
+    margin-bottom: 52px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  }
+
+  #progress-ring {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #progress-ring svg {
+    position: absolute;
+    top: 0; left: 0;
+    transform: rotate(-90deg);
+  }
+
+  #progress-bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.08);
+    stroke-width: 6;
+  }
+
+  #progress-arc {
+    fill: none;
+    stroke: rgba(224,155,110,0.85);
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+  }
+
+  #countdown-number {
+    font-size: 160px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1;
+    text-shadow:
+      0 0 60px rgba(224,155,110,0.8),
+      0 0 120px rgba(224,155,110,0.4),
+      0 2px 10px rgba(0,0,0,0.8);
+    animation: countPulse 1s ease-in-out infinite alternate;
+    min-width: 280px;
+    display: inline-block;
+  }
+
+  @keyframes countPulse {
+    from { transform: scale(1);    opacity: 1; }
+    to   { transform: scale(1.04); opacity: 0.9; }
+  }
+
+  #countdown-label {
+    font-size: 28px;
+    color: rgba(255,210,170,0.9);
+    font-style: italic;
+    margin-top: 20px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 16px rgba(224,155,110,0.5);
+  }
+
+  /* ── CARD PRINCIPAL ─────────────────────────────────────── */
+  #card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 10;
+    text-align: center;
+    padding: 50px 100px 46px;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 30px;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    width: 1160px;
+    box-shadow: 0 0 100px rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease;
+    transform: translate(-50%, -50%);
+}
+
+#card.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  #logo-card {
+    display: block;
+    width: 240px;
+    margin: 0 auto 24px;
+    opacity: 0.92;
+    filter: drop-shadow(0 2px 18px rgba(0,0,0,0.5));
+  }
+
+  #headline {
+    font-size: 68px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 22px;
+    text-shadow: 0 0 50px rgba(255,220,180,0.45), 0 2px 10px rgba(0,0,0,0.7);
+    animation: shimmer 5s ease-in-out infinite alternate;
+  }
+
+  @keyframes shimmer {
+    from { text-shadow: 0 0 30px rgba(255,200,150,0.4), 0 2px 10px rgba(0,0,0,0.7); }
+    to   { text-shadow: 0 0 70px rgba(255,200,150,0.9), 0 2px 10px rgba(0,0,0,0.7); }
+  }
+
+  #sub {
+    font-size: 34px;
+    color: rgba(255,255,255,0.85);
+    font-style: italic;
+    line-height: 1.45;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    margin-bottom: 14px;
+  }
+
+  #thanks {
+    font-size: 28px;
+    color: rgba(255, 210, 170, 0.97);
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-shadow: 0 0 22px rgba(230,160,100,0.6);
+  }
+
+  /* ── CARD PRINCIPAL ── INFORMACION DE CANCIONES ───────────────────────────────────── */
+  #song-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+#song-title {
+    font-size: 22px;
+    color: rgba(255, 215, 175, 0.95);
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 600px;
+}
+
+  #viz {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 7px;
+    height: 40px;
+    margin-top: 18px;
+  }
+
+  .vbar {
+    width: 9px;
+    border-radius: 5px;
+    background: rgba(224,155,110,0.6);
+    transition: height 0.15s ease;
+  }
+
+  /* ── RECUADRO CÁMARA ───────────────────────────────────── */
+  #camera-frame {
+    position: absolute;
+    top: 32px;
+    right: 48px;
+    z-index: 25;
+    width: 380px;
+    height: 214px;
+    border-radius: 20px;
+    background: transparent;
+    border: 1.5px solid rgba(224,155,110,0.45);
+    box-shadow: 0 0 0 1px rgba(224,155,110,0.2);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #camera-frame::before,
+  #camera-frame::after {
+    content: '';
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-color: rgba(224,155,110,0.7);
+    border-style: solid;
+    border-radius: 4px;
+  }
+  #camera-frame::before {
+    top: 10px; left: 10px;
+    border-width: 2px 0 0 2px;
+  }
+  #camera-frame::after {
+    bottom: 10px; right: 10px;
+    border-width: 0 2px 2px 0;
+  }
+
+  .cam-corner-tr {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 28px; height: 28px;
+    border-top: 2px solid rgba(224,155,110,0.7);
+    border-right: 2px solid rgba(224,155,110,0.7);
+    border-radius: 4px;
+  }
+  .cam-corner-bl {
+    position: absolute;
+    bottom: 10px; left: 10px;
+    width: 28px; height: 28px;
+    border-bottom: 2px solid rgba(224,155,110,0.7);
+    border-left: 2px solid rgba(224,155,110,0.7);
+    border-radius: 4px;
+  }
+
+  #live-badge {
+    position: absolute;
+    top: 226px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 12px;
+  }
+
+  #live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e05050;
+    animation: livePulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(224,80,80,0.6); }
+    50%       { opacity: 0.7; box-shadow: 0 0 0 5px rgba(224,80,80,0); }
+  }
+
+  #live-text {
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    font-family: Georgia, serif;
+    letter-spacing: 1px;
+  }
+
+  /* Logo esquina izquierda */
+  #logo-corner {
+    position: absolute;
+    top: 32px;
+    left: 48px;
+    z-index: 30;
+    width: 190px;
+    opacity: 0.88;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+  }
+
+  /* Verse scroll */
+  #verse-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    z-index: 20;
+    background: rgba(0,0,0,0.55);
+    height: 58px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  #verse-text {
+    white-space: nowrap;
+    font-size: 25px;
+    color: rgba(255,220,185,0.95);
+    font-style: italic;
+    animation: scrollVerse 180s linear infinite;
+  }
+
+  /* ── CARD DESPEDIDA ─────────────────────────────────────── */
+#farewell-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 10;
+    text-align: center;
+    padding: 70px 100px;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 30px;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    width: 1000px;
+    box-shadow: 0 0 100px rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+}
+
+#farewell-card.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#farewell-logo {
+    width: 200px;
+    opacity: 0.92;
+    filter: drop-shadow(0 2px 18px rgba(0,0,0,0.5));
+}
+
+#farewell-text {
+    font-size: 38px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1.5;
+    text-shadow: 0 0 50px rgba(255,220,180,0.45), 0 2px 10px rgba(0,0,0,0.7);
+    animation: shimmer 5s ease-in-out infinite alternate;
+}
+
+#farewell-cross {
+    font-size: 44px;
+    color: rgba(224, 155, 110, 0.6);
+    animation: crossGlow 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes crossGlow {
+    from { filter: drop-shadow(0 0 14px rgba(255,220,100,0.6)); }
+    to   { filter: drop-shadow(0 0 38px rgba(255,220,100,1)); }
+}
+
+  @keyframes scrollVerse {
+    from { transform: translateX(1920px); }
+    to   { transform: translateX(-100%); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── DOS CAPAS DE FONDO ──────────────────────────────────── -->
+<div class="bg-layer" id="bg-a"></div>
+<div class="bg-layer" id="bg-b"></div>
+
+<!-- Dos juegos de orbs -->
+<div id="orbs-a">
+  <div class="orb" id="orb-a1" style="width:540px;height:540px;top:-130px;left:-110px;animation-duration:7s;"></div>
+  <div class="orb" id="orb-a2" style="width:440px;height:440px;bottom:-110px;right:-90px;animation-duration:9s;animation-delay:2s;"></div>
+  <div class="orb" id="orb-a3" style="width:340px;height:340px;top:45%;left:48%;transform:translate(-50%,-50%);animation-duration:12s;animation-delay:4s;"></div>
+</div>
+<div id="orbs-b">
+  <div class="orb" id="orb-b1" style="width:540px;height:540px;top:-130px;left:-110px;animation-duration:7s;"></div>
+  <div class="orb" id="orb-b2" style="width:440px;height:440px;bottom:-110px;right:-90px;animation-duration:9s;animation-delay:2s;"></div>
+  <div class="orb" id="orb-b3" style="width:340px;height:340px;top:45%;left:48%;transform:translate(-50%,-50%);animation-duration:12s;animation-delay:4s;"></div>
+</div>
+
+<canvas id="particles"></canvas>
+
+<!-- Logo esquina izquierda -->
+<img id="logo-corner" src="http://localhost:8080/Logo.png" alt="Reto Comunidad Cristiana">
+
+<!-- Recuadro decorativo para cámara -->
+<div id="camera-frame">
+  <div class="cam-corner-tr"></div>
+  <div class="cam-corner-bl"></div>
+  <div id="live-badge">
+    <div id="live-dot"></div>
+    <span id="live-text">EN VIVO</span>
+  </div>
+</div>
+
+<!-- ── PANTALLA DE CUENTA REGRESIVA ──────────────────────── -->
+<div id="countdown-screen">
+  <div id="countdown-card">
+    <!--img id="countdown-logo" src="http://localhost:8080/Logo_Reto.png" alt="Reto Comunidad Cristiana"-->
+    <div id="countdown-title">En un momento comenzará el servicio dominical de RETO Comunidad Cristiana</div>
+    <div id="countdown-sub">Prepara tu corazón, iniciamos en </div>
+    <div id="progress-ring">
+      <svg width="300" height="300" viewBox="0 0 300 300">
+        <circle id="progress-bg" cx="150" cy="150" r="130"/>
+        <circle id="progress-arc" cx="150" cy="150" r="130"/>
+      </svg>
+      <div id="countdown-number">60</div>
+    </div>
+    <div id="countdown-label">segundos</div>
+  </div>
+</div>
+
+<!-- ── CARD PRINCIPAL ─────────────────────────────────────── -->
+<div id="card">
+  <!--img id="logo-card" src="http://localhost:8080/Logo_Reto.png" alt="Reto Comunidad Cristiana"-->
+  <div id="headline">Estamos en un momento de alabanza</div>
+  <div id="sub">El audio está pausado temporalmente<br>para no violar derechos de autor</div>
+  <div id="thanks">¡Gracias por tu comprensión,<br>En un momento comenzamos!</div>
+  <div id="song-info">
+    <span id="song-title"></span>
+    <div id="song-dots"></div>
+  </div>
+  <div id="viz"></div>
+</div>
+
+<!-- ── CARD DESPEDIDA ─────────────────────────────────────── -->
+<div id="farewell-card">
+  <div id="farewell-text"></div>
+  <span id="farewell-cross">✝</span>
+</div>
+
+<div id="verse-bar">
+  <span id="verse-text">
+    "Todo esto proviene de Dios, quien por medio de Cristo nos reconcilió consigo mismo y nos dio el ministerio de la reconciliación." — 2 Cor. 5:18 NVI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "No se amolden al mundo actual, sino sean transformados mediante la renovación de su mente. Así podrán comprobar cuál es la voluntad de Dios, buena, agradable y perfecta." — Rom. 12:2 NVI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Vayan y hagan discípulos de todas las naciones, bautizándolos en el nombre del Padre y del Hijo y del Espíritu Santo" — Mat. 28:19 NVI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Nadie puede servir a dos señores, pues menospreciará a uno y amará al otro, o querrá mucho a uno y despreciará al otro. No se puede servir a la vez a Dios y a las riquezas." — Mat. 6:24 NVI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Instruye al niño en el camino correcto, y aun en su vejez no lo abandonará." — Prov. 22:6 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    “Les suplico, hermanos, en el nombre de nuestro Señor Jesucristo, que todos vivan en armonía y que no haya divisiones entre ustedes, sino que se mantengan unidos en un mismo pensar y en un mismo propósito.” - 1 Corintios 1:10 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Porque para Dios no hay nada imposible." — Luc. 1:37 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Entrégale tus afanes al Señor y él te sostendrá; no permitirá que el justo caiga y quede abatido para siempre." — Sal. 55:22 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Cantad a Jehová cántico nuevo; cantad a Jehová, toda la tierra." — Sal. 96:1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Alabad a Dios en su santuario; alabadle en la magnificencia de su firmamento." — Sal. 150:1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Regocijaos en el Señor siempre. Otra vez digo: ¡Regocijaos!" — Fil. 4:4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "El que habita en el abrigo del Altísimo morará bajo la sombra del Omnipotente." — Sal. 91:1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    "Bendice, alma mía, a Jehová, y bendiga todo mi ser su santo nombre." — Sal. 103:1
+  </span>
+</div>
+
+<audio id="audio-player" preload="auto"></audio>
+
+<script>
+  // ── CONFIGURACIÓN ──────────────────────────────────────────
+const SHOW_COUNTDOWN  = false;  // false = salta la cuenta regresiva
+const SHOW_MAIN_CARD  = false;  // false = salta el card principal
+const SHOW_FAREWELL   = true; // true  = muestra el card de despedida
+const TOTAL_SECONDS  = 60;    // duración de la cuenta regresiva
+
+  document.addEventListener('DOMContentLoaded', () => {
+  loadSong(0, false); // false = no autoplay, solo carga el nombre
+});
+// ── FONDOS — crossfade real con dos capas ──────────────────
+const bgs = [
+  { bg: 'radial-gradient(ellipse at 35% 40%, #1b2e4a 0%, #0d1b30 65%, #050d1a 100%)', o1:'#2a4a72', o2:'#1e3a5f', o3:'#162d4a' },
+  { bg: 'radial-gradient(ellipse at 60% 35%, #3a1f10 0%, #1e0f06 65%, #0d0603 100%)', o1:'#6b3520', o2:'#8a4a28', o3:'#4a2412' },
+  { bg: 'radial-gradient(ellipse at 40% 60%, #0f2a1e 0%, #071a10 65%, #030d08 100%)', o1:'#1a4a2e', o2:'#0f3020', o3:'#1e5c38' },
+  { bg: 'radial-gradient(ellipse at 55% 35%, #1e0f35 0%, #110820 65%, #080410 100%)', o1:'#3a1a60', o2:'#2a1048', o3:'#4a2278' },
+  { bg: 'radial-gradient(ellipse at 30% 50%, #1a1f2e 0%, #0e1218 65%, #060810 100%)', o1:'#2a3550', o2:'#1e2840', o3:'#354468' },
+  { bg: 'radial-gradient(ellipse at 65% 45%, #072028 0%, #041218 65%, #020a0e 100%)', o1:'#0e3a46', o2:'#0a2830', o3:'#124e5e' },
+];
+
+let bgIdx = 0;
+let activeLayer = 'a'; // qué capa está visible ahora
+
+const farewellMessages = [
+  "Gracias por acompañarnos en este servicio dominical. ¡Nos vemos el próximo domingo! 🙏",
+  "Gracias por ser parte de RETO hoy. Este video quedará disponible para que puedas verlo cuando quieras. ¡Bendiciones y hasta el próximo domingo!",
+  "Gracias por conectarte con nosotros. Si esta transmisión te bendijo, compártela. ¡Nos vemos el próximo domingo en RETO!",
+  "Fue un privilegio compartir este tiempo contigo. Que todo lo que escuchaste hoy transforme tu semana. ¡Hasta el próximo domingo!",
+  "Gracias por ser parte de nuestra comunidad. Recuerda que RETO es tu familia. ¡Te esperamos el próximo domingo!",
+  "Que la Palabra de hoy sea lámpara a tus pies y lumbrera a tu camino. Gracias por conectarte. ¡Hasta pronto!",
+  "Servicio terminado. Que Dios guarde tu salida y tu entrada desde ahora y para siempre. ¡Bendiciones!",
+  "Gracias por vernos en línea. Si puedes, te invitamos a vivir la experiencia en persona. ¡Te esperamos cada domingo en RETO!",
+];
+
+function showFarewell() {
+  const msg = farewellMessages[Math.floor(Math.random() * farewellMessages.length)];
+  document.getElementById('farewell-text').textContent = msg;
+  document.getElementById('farewell-card').classList.add('visible');
+
+  // Fade a negro después de 30 segundos
+  setTimeout(() => {
+    clearInterval(bgInterval); // ← detiene el ciclo de fondos
+    document.body.style.transition = 'background 3s ease-in-out';
+    document.body.style.background = '#000';
+    document.getElementById('farewell-card').style.transition = 'opacity 3s ease-in-out';
+    document.getElementById('farewell-card').style.opacity = '0';
+    // Apagar también las capas de fondo y partículas
+    document.getElementById('bg-a').style.transition = 'opacity 3s ease-in-out';
+    document.getElementById('bg-a').style.opacity = '0';
+    document.getElementById('bg-b').style.transition = 'opacity 3s ease-in-out';
+    document.getElementById('bg-b').style.opacity = '0';
+    document.getElementById('orbs-a').style.transition = 'opacity 3s ease-in-out';
+    document.getElementById('orbs-a').style.opacity = '0';
+    document.getElementById('orbs-b').style.transition = 'opacity 3s ease-in-out';
+    document.getElementById('orbs-b').style.opacity = '0';
+    document.getElementById('particles').style.transition = 'opacity 3s ease-in-out';
+    document.getElementById('particles').style.opacity = '0';
+    document.getElementById('logo-corner').style.transition = 'opacity 3s ease-in-out';
+    document.getElementById('logo-corner').style.opacity = '0';
+  }, 15000);
+}
+
+function applyBgToLayer(layer, idx) {
+  const b = bgs[idx];
+  document.getElementById('bg-' + layer).style.background = b.bg;
+  document.getElementById('orb-' + layer + '1').style.background = b.o1;
+  document.getElementById('orb-' + layer + '2').style.background = b.o2;
+  document.getElementById('orb-' + layer + '3').style.background = b.o3;
+}
+
+function crossfadeToNext() {
+  const next = bgIdx;
+  const incoming = activeLayer === 'a' ? 'b' : 'a';
+  const outgoing  = activeLayer;
+
+  // Pintar el nuevo fondo en la capa oculta
+  applyBgToLayer(incoming, next);
+
+  // Crossfade: mostrar incoming, ocultar outgoing
+  document.getElementById('bg-' + incoming).style.opacity = '1';
+  document.getElementById('orbs-' + incoming).style.opacity = '1';
+  document.getElementById('bg-' + outgoing).style.opacity = '0';
+  document.getElementById('orbs-' + outgoing).style.opacity = '0';
+
+  activeLayer = incoming;
+}
+
+// Inicializar primer fondo en capa A
+applyBgToLayer('a', 0);
+// Pre-cargar el segundo en capa B (oculta)
+applyBgToLayer('b', 1);
+
+const bgInterval = setInterval(() => {
+    bgIdx = (bgIdx + 1) % bgs.length;
+    crossfadeToNext();
+    setTimeout(() => {
+        const hidden = activeLayer === 'a' ? 'b' : 'a';
+        const preload = (bgIdx + 1) % bgs.length;
+        applyBgToLayer(hidden, preload);
+    }, 2000);
+}, 12000);
+
+// ── CUENTA REGRESIVA ───────────────────────────────────────
+let secondsLeft = TOTAL_SECONDS;
+
+const circumference = 2 * Math.PI * 130;
+const arc = document.getElementById('progress-arc');
+arc.style.strokeDasharray = circumference;
+arc.style.strokeDashoffset = 0;
+
+function updateCountdown() {
+  document.getElementById('countdown-number').textContent = secondsLeft;
+  const progress = secondsLeft / TOTAL_SECONDS;
+  arc.style.strokeDashoffset = circumference * (1 - progress);
+
+  if (secondsLeft <= 0) {
+    const screen = document.getElementById('countdown-screen');
+    screen.classList.add('hidden');
+// Pre-cargar el audio antes del fade
+audio.src = BASE + songs[0].file;
+audio.load();
+setTimeout(() => {
+  screen.style.display = 'none';
+  document.getElementById('card').classList.add('visible');
+  document.getElementById('camera-frame').style.display = 'flex';
+  audio.play().then(() => {
+    isPlaying = true;
+    document.getElementById('play-pause-btn').textContent = '⏸';
+    document.getElementById('song-title').textContent = '♩ ' + songs[0].name;
+    updateDots();
+  }).catch(e => console.warn('Autoplay bloqueado:', e));
+}, 1500);
+    return;
+  }
+
+  secondsLeft--;
+  setTimeout(updateCountdown, 1000);
+}
+
+window.addEventListener('load', () => {
+  audio.src = BASE + songs[0].file;
+  audio.load();
+
+if (SHOW_FAREWELL) {
+    document.getElementById('countdown-screen').style.display = 'none';
+    document.getElementById('camera-frame').style.display = 'none';
+    document.getElementById('verse-bar').style.display = 'none';
+    document.getElementById('logo-corner').style.display = 'none';
+    showFarewell();
+    return;
+}
+
+  if (SHOW_COUNTDOWN) {
+    setTimeout(updateCountdown, 500);
+  } else {
+    document.getElementById('countdown-screen').style.display = 'none';
+    if (SHOW_MAIN_CARD) {
+      document.getElementById('card').classList.add('visible');
+      document.getElementById('camera-frame').style.display = 'flex';
+      audio.play().then(() => {
+        isPlaying = true;
+        document.getElementById('play-pause-btn').textContent = '⏸';
+        document.getElementById('song-title').textContent = '♩ ' + songs[0].name;
+        updateDots();
+      }).catch(e => console.warn('Autoplay bloqueado:', e));
+    }
+  }
+});
+
+// ── CANCIONES ──────────────────────────────────────────────
+const BASE = 'http://localhost:8080/mp3/';
+
+const songs = [
+  { file: 'alanajordan-gospel-instrumental-01-383531.mp3',                              name: 'Gospel Instrumental — Alana Jordan' },
+  { file: 'denis-pavlov-music-worship-piano-instrumental-peaceful-prayer-music-223373.mp3', name: 'Worship Piano — Peaceful Prayer · Denis Pavlov' },
+  { file: 'harmony-of-heaven-worship-gospel-christian-church-music-491941.mp3',         name: 'Harmony of Heaven — Worship Gospel' },
+  { file: 'ikoliks_aj-gospel-worship-christian-church-music-391977.mp3',                name: 'Gospel Worship Church — Ikoliks' },
+  { file: 'jesuschristisgod-christian-rock-for-jesus-christ-always-301257.mp3',         name: 'Christian Rock for Jesus Christ' },
+  { file: 'jesuschristisgod-instrumental-guitar-worship-to-jesus-301253.mp3',           name: 'Instrumental Guitar Worship to Jesus' },
+  { file: 'jesuschristisgod-instrumental-piano-christian-worship-of-jesus-301250.mp3',  name: 'Instrumental Piano — Christian Worship of Jesus' },
+  { file: 'misselle-around-jericho-joshua-6-instrumental-498104.mp3',                   name: 'Around Jericho · Joshua 6 — Misselle' },
+  { file: 'mosthigh-powerful-christian-worship-song-354391.mp3',                        name: 'Powerful Christian Worship — Most High' },
+];
+
+let currentIdx = 0, isPlaying = false;
+
+// Shuffle al inicio
+function suffleArray(arr) {
+  for (let i  = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+suffleArray(songs);
+
+const audio = document.getElementById('audio-player');
+
+function loadSong(idx, autoplay) {
+  currentIdx = idx;
+  audio.src = BASE + songs[idx].file;
+  document.getElementById('song-title').textContent = '♩ ' + songs[idx].name;
+  updateDots();
+  if (autoplay) {
+    audio.play().then(() => {
+      isPlaying = true;
+      document.getElementById('play-pause-btn').textContent = '⏸';
+    }).catch(e => console.warn(e));
+  }
+}
+
+function togglePlay() {
+  if (!audio.src || audio.src === window.location.href) { loadSong(0, true); return; }
+  if (isPlaying) {
+    audio.pause(); isPlaying = false;
+    document.getElementById('play-pause-btn').textContent = '▶';
+  } else {
+    audio.play(); isPlaying = true;
+    document.getElementById('play-pause-btn').textContent = '⏸';
+  }
+}
+
+function nextSong() { loadSong((currentIdx + 1) % songs.length, true); }
+function prevSong() { loadSong((currentIdx - 1 + songs.length) % songs.length, true); }
+audio.addEventListener('ended', () => loadSong((currentIdx + 1) % songs.length, true));
+
+const dotsEl = document.getElementById('song-dots');
+songs.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => loadSong(i, true);
+  dotsEl.appendChild(dot);
+});
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+}
+
+// ── VISUALIZER ─────────────────────────────────────────────
+const viz = document.getElementById('viz');
+const bars = [];
+for (let i = 0; i < 26; i++) {
+  const b = document.createElement('div');
+  b.className = 'vbar'; b.style.height = '8px';
+  viz.appendChild(b); bars.push(b);
+}
+function animateViz() {
+  bars.forEach(b => { b.style.height = (isPlaying ? Math.random()*36+6 : 6) + 'px'; });
+  setTimeout(animateViz, 120);
+}
+animateViz();
+
+// ── PARTÍCULAS ─────────────────────────────────────────────
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = 1920; canvas.height = 1080;
+const paleta = [[232,168,130],[212,137,106],[168,196,162],[123,184,160],[255,235,210]];
+const pts = Array.from({ length: 85 }, () => {
+  const color = paleta[Math.floor(Math.random()*paleta.length)];
+  return { x:Math.random()*1920, y:Math.random()*1080+200, r:Math.random()*2.5+0.7,
+    speed:Math.random()*0.5+0.15, life:Math.floor(Math.random()*500),
+    maxLife:Math.floor(Math.random()*500+350), maxOp:Math.random()*0.6+0.2, opacity:0, color };
+});
+(function drawPts() {
+  ctx.clearRect(0,0,1920,1080);
+  pts.forEach(p => {
+    p.life++; p.y -= p.speed;
+    const prog = (p.life % p.maxLife) / p.maxLife;
+    p.opacity = prog<0.15 ? (prog/0.15)*p.maxOp : prog>0.85 ? ((1-prog)/0.15)*p.maxOp : p.maxOp;
+    if (p.life % p.maxLife === 0) { p.x=Math.random()*1920; p.y=1100; }
+    const [r,g,b] = p.color;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${r},${g},${b},${p.opacity})`; ctx.fill();
+  });
+  requestAnimationFrame(drawPts);
+})();
+</script>
+</body>
+</html>

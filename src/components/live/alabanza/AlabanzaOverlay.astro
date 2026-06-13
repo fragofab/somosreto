@@ -1,0 +1,74 @@
+---
+/**
+ * AlabanzaOverlay.astro
+ * Orquestador principal del overlay de alabanza.
+ * Monta todos los subcomponentes y controla el flujo de estados:
+ *   COUNTDOWN → MAIN CARD → FAREWELL
+ *
+ * Props:
+ *   mode — qué estado mostrar al cargar
+ *     'countdown' : muestra cuenta regresiva → transita a main card
+ *     'main'      : salta al card principal directo
+ *     'farewell'  : muestra despedida directo
+ *   totalSeconds  — duración del countdown (default 60)
+ */
+import Background   from './Background.astro';
+import VerseBar     from './VerseBar.astro';
+import CameraFrame  from './CameraFrame.astro';
+import AudioPlayer  from './AudioPlayer.astro';
+import CountdownCard from './CountdownCard.astro';
+import MainCard     from './MainCard.astro';
+import FarewellCard from './FarewellCard.astro';
+import { asset }    from '../../../utils/asset';
+
+interface Props {
+  mode?: 'countdown' | 'main' | 'farewell';
+  totalSeconds?: number;
+}
+const { mode = 'countdown', totalSeconds = 60 } = Astro.props;
+---
+
+<!-- Logo esquina superior izquierda — siempre visible -->
+<img
+  id="logo-corner"
+  src={asset('images/logo-reto-corner.png')}
+  alt="RETO Comunidad Cristiana"
+/>
+
+<Background />
+<VerseBar />
+<CameraFrame />
+<AudioPlayer />
+<CountdownCard totalSeconds={totalSeconds} />
+<MainCard />
+<FarewellCard />
+
+<!-- Arrancar en el modo correcto una vez que todo el DOM esté listo -->
+<meta id="overlay-config" data-mode={mode} />
+
+<style>
+  #logo-corner {
+    position: absolute;
+    top: 32px;
+    left: 48px;
+    z-index: 30;
+    width: 190px;
+    opacity: 0.88;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+  }
+</style>
+
+<script>
+  const config = document.getElementById('overlay-config') as HTMLMetaElement;
+  const mode   = config.dataset.mode as 'countdown' | 'main' | 'farewell';
+
+  window.addEventListener('load', () => {
+    if (mode === 'countdown') {
+      (window as any).startCountdown?.();
+    } else if (mode === 'main') {
+      (window as any).showMainCard?.();
+    } else if (mode === 'farewell') {
+      (window as any).showFarewell?.();
+    }
+  });
+</script>

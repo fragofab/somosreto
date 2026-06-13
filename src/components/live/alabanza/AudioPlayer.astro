@@ -1,0 +1,97 @@
+---
+/**
+ * AudioPlayer.astro
+ * Reproductor de audio oculto visualmente.
+ * - Playlist de 9 MP3 royalty-free en shuffle
+ * - Autoplay al iniciarse (requiere interacción del usuario en browser,
+ *   en OBS/Chromium con --autoplay-policy=no-user-gesture-required funciona)
+ * - Expone en window: togglePlay(), nextSong(), prevSong(), currentSongName()
+ * - Emite evento 'song-change' al cambiar de canción (lo escucha MainCard)
+ */
+---
+
+<audio id="audio-player" preload="auto"></audio>
+
+<script>
+  interface Song {
+    file: string;
+    name: string;
+  }
+
+  // BASE_URL disponible en scripts de Astro — resuelve dev (/) y prod (/somosreto)
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+  const playlist: Song[] = [
+    { file: `${base}/audio/alabanza/alanajordan-gospel-instrumental-01-383531.mp3`,                               name: 'Gospel Instrumental — Alana Jordan' },
+    { file: `${base}/audio/alabanza/denis-pavlov-music-worship-piano-instrumental-peaceful-prayer-music-223373.mp3`, name: 'Worship Piano — Peaceful Prayer · Denis Pavlov' },
+    { file: `${base}/audio/alabanza/harmony-of-heaven-worship-gospel-christian-church-music-491941.mp3`,          name: 'Harmony of Heaven — Worship Gospel' },
+    { file: `${base}/audio/alabanza/ikoliks_aj-gospel-worship-christian-church-music-391977.mp3`,                 name: 'Gospel Worship Church — Ikoliks' },
+    { file: `${base}/audio/alabanza/jesuschristisgod-christian-rock-for-jesus-christ-always-301257.mp3`,          name: 'Christian Rock for Jesus Christ' },
+    { file: `${base}/audio/alabanza/jesuschristisgod-instrumental-guitar-worship-to-jesus-301253.mp3`,            name: 'Instrumental Guitar Worship to Jesus' },
+    { file: `${base}/audio/alabanza/jesuschristisgod-instrumental-piano-christian-worship-of-jesus-301250.mp3`,   name: 'Instrumental Piano — Christian Worship of Jesus' },
+    { file: `${base}/audio/alabanza/misselle-around-jericho-joshua-6-instrumental-498104.mp3`,                    name: 'Around Jericho · Joshua 6 — Misselle' },
+    { file: `${base}/audio/alabanza/mosthigh-powerful-christian-worship-song-354391.mp3`,                         name: 'Powerful Christian Worship — Most High' },
+  ];
+
+  // Shuffle Fisher-Yates
+  for (let i = playlist.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [playlist[i], playlist[j]] = [playlist[j], playlist[i]];
+  }
+
+  const audio = document.getElementById('audio-player') as HTMLAudioElement;
+  let currentIdx = 0;
+  let isPlaying   = false;
+
+  function emitSongChange(): void {
+    window.dispatchEvent(new CustomEvent('song-change', {
+      detail: { name: playlist[currentIdx].name, idx: currentIdx, total: playlist.length }
+    }));
+  }
+
+  function loadSong(idx: number, autoplay: boolean): void {
+    currentIdx    = idx;
+    audio.src     = playlist[idx].file;
+    emitSongChange();
+    if (autoplay) {
+      audio.play()
+        .then(() => { isPlaying = true; })
+        .catch(e => console.warn('Autoplay bloqueado:', e));
+    }
+  }
+
+  function togglePlay(): void {
+    if (!audio.src || audio.src === window.location.href) {
+      loadSong(0, true);
+      return;
+    }
+    if (isPlaying) {
+      audio.pause();
+      isPlaying = false;
+    } else {
+      audio.play().then(() => { isPlaying = true; }).catch(e => console.warn(e));
+    }
+  }
+
+  function nextSong(): void { loadSong((currentIdx + 1) % playlist.length, true); }
+  function prevSong(): void { loadSong((currentIdx - 1 + playlist.length) % playlist.length, true); }
+  function currentSongName(): string { return playlist[currentIdx]?.name ?? ''; }
+  function getIsPlaying(): boolean { return isPlaying; }
+
+  // Avanzar automáticamente al terminar una canción
+  audio.addEventListener('ended', () => nextSong());
+
+  // Pre-cargar la primera canción
+  loadSong(0, false);
+
+  // Exponer API global para que otros componentes puedan controlar el audio
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).AudioPlayer = {
+    togglePlay,
+    nextSong,
+    prevSong,
+    currentSongName,
+    isPlaying: getIsPlaying,
+    play: () => loadSong(currentIdx, true),
+  };
+</script>
